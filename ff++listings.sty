@@ -1,0 +1,106 @@
+%% Author: Rafa Rodríguez Galván, 2011
+%% LaTeX listings package for the language FreeFem++
+%% Keywords extracted from FreeFem++ DOC/freefem++doc.tex
+
+\RequirePackage{listings}
+
+\lstdefinelanguage{freefem++}[]{C++}{%
+  morekeywords={
+    adaptmesh,
+    Cmatrix,
+    R3,
+    bool,
+    border,
+    break,
+    buildmesh,
+    catch,
+    cin,
+    complex,
+    continue,
+    cout,
+    element,
+    else,
+    end,
+    fespace,
+    for,
+    func,
+    if,
+    ifstream,
+    include,
+    int,
+    intalledge,
+    load,
+    macro,
+    matrix,
+    mesh,
+    movemesh,
+    ofstream,
+    plot,
+    problem,
+    real,
+    return,
+    savemesh,
+    solve,
+    string,
+    try,
+    throw,
+    vertex,
+    varf,
+    while
+  }
+  morekeywords2={
+    % Second category of Keywords
+    int1d,
+    int2d,
+    on,
+    square,
+    % Third category of Keywords
+    dx,
+    dy,
+    convect,
+    jump,
+    mean,
+    % Fourth category of Keywords
+    wait,
+    ps,
+    solver,
+    CG,
+    LU,
+    UMFPACK,
+    factorize,
+    init,
+    endl,
+    % Other Reserved Words
+    x, y, z, pi, i,
+    sin, cos, tan, atan, asin, acos,
+    cotan,sinh,cosh,tanh,cotanh,
+    exp, log, log10, sqrt
+    abs, max, min
+  }
+}[keywords, comments, strings, directives]
+
+\lstset{ frame=Ltb,
+     framerule=0pt,
+     aboveskip=0.5cm,
+     framextopmargin=3pt,
+     framexbottommargin=3pt,
+     % framexleftmargin=1cm,
+     framesep=0pt,
+     rulesep=.4pt,
+     backgroundcolor=\color{gray!10},
+     rulesepcolor=\color{black},
+     %
+     stringstyle=\ttfamily,
+     showstringspaces = false,
+     basicstyle=\small\ttfamily,
+     stringstyle=\color{green!65!purple},
+     commentstyle=\color{blue!80},
+     identifierstyle=\bfseries,
+     keywordstyle=\bfseries\color{orange!80!black},
+     %
+     numbers=left,
+     numbersep=15pt,
+     numberstyle=\tiny,
+     numberfirstline = false,
+     breaklines=trufe,
+   }

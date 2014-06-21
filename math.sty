@@ -1,0 +1,89 @@
+%-----------------------------------------------------------------------
+% Definiciones en general
+%-----------------------------------------------------------------------
+
+%
+% 
+%
+\RequirePackage{amsmath}
+\RequirePackage{amssymb}
+\def\Cset{{\mathbb C}}  
+\def\Qset{{\mathbb Q}}
+\def\Zset{{\mathbb Z}}  
+\def\Rset{{\mathbb R}}
+\def\Nset{{\mathbb N}}
+
+\def\eps{\varepsilon}
+
+\newenvironment{teorema}[1][]
+{\par\noindent\textbf{Teorema #1.}}
+{}
+\newsavebox{\resultado@box}
+\newenvironment{resultado}[1][]
+{\begin{lrbox}{\resultado@box}\begin{minipage}{0.9\linewidth}\em}
+{\end{minipage}\end{lrbox}%
+\begin{center}\fbox{\usebox{\resultado@box}}\end{center}}
+
+% Ecuación encerada en un marco
+\newsavebox{\fequation@box}
+\newenvironment{fequation}[1][0.6]
+{\begin{lrbox}{\fequation@box}%
+    \begin{minipage}{#1\linewidth}%
+      \begin{equation*}\displaystyle}
+{\end{equation*}\end{minipage}\end{lrbox}%
+\begin{center}
+\fbox{\usebox{\fequation@box}}
+\end{center}
+}
+
+%
+
+\DeclareMathOperator{\card}{card}  % Cardinal
+\DeclareMathOperator{\mcm}{mcm}    % Mínimo común múltiplo
+\DeclareMathOperator{\mcd}{mcd}    % Máximo común divisor
+
+% Paréntesis para números decimales periódicos
+\newcommand{\parentesisCap}{\braceld \leaders \vrule \hfill \bracerd}
+\newcommand{\periodo}[1]{\stackrel{\parentesisCap}{#1}}
+\newcommand{\angulo}[1]{\ensuremath{\widehat{#1}}}
+\renewcommand{\vector}[1]{\ensuremath{\overrightarrow{#1}}}
+
+
+% Otros...
+\newcommand{\suchThat}{\ensuremath{\ / \ }}
+
+\newcommand{\base}[1]{\ensuremath{_{[#1}}}
+\newcommand{\fmath}[1]{\fbox{\ensuremath{#1}}}
+\newcommand{\tq}{\ensuremath{\ / \ }}
+\newcommand{\pare}[1]{\ensuremath{\left(#1\right)}}
+\newcommand{\sii}{\ensuremath{\Longleftrightarrow}}
+
+\newcommand{\matrices}[1]{\ensuremath{{\cal M}_#1}}
+\newcommand{\trasp}[1]{\ensuremath{{#1}^t}}
+\newcommand{\adj}[1]{\ensuremath{\mathop{\mbox{adj}}#1}}
+\newcommand{\rg}[1]{\ensuremath{\mathop{\mbox{rg}}#1}}
+\newcommand{\img}{\operatorname{Img}}
+\renewcommand{\ker}{\operatorname{Ker}}
+%\newcommand{\span}{\operatorname{span}}
+%\newcommand{\adj}[1]{\ensuremath{\mathop{#1}}}
+
+\newcommand{\llaveizq}[1]{$\left\{
+  \begin{tabular}{@{}l@{}}#1\end{tabular}\right.$}
+\newcommand{\llaveder}[1]{$\left.
+  \begin{tabular}{@{}l@{}}#1\end{tabular}\right\}$}
+
+
+\newcommand{\division}[4]{%
+\ensuremath{%
+\begin{array}{rl}
+#1 & \begin{array}{|c}
+   #2 \\
+  \hline
+\end{array} \\
+#4 & #3
+\end{array}
+}}
+
+% Seno, etc
+\newcommand{\sen}[1]{\ensuremath{\mathop{#1}}}
+\newcommand{\arcsen}[1]{\ensuremath{\mathop{#1}}}

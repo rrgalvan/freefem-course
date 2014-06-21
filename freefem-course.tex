@@ -1,0 +1,75 @@
+% Created 2011-07-10 dom 13:39
+\documentclass[11pt]{article}
+\usepackage[latin1]{inputenc}
+%\usepackage[T1]{fontenc}
+\usepackage{fixltx2e}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage{soul}
+\usepackage{textcomp}
+\usepackage{marvosym}
+\usepackage{xspace}
+\usepackage{latexsym}
+\usepackage{amssymb}
+\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+\usepackage{hyperref}
+\definecolor{darkblue}{rgb}{0.0,0.1,0.3}
+\definecolor{darkgreen}{rgb}{0.0,0.35,0.15}
+\definecolor{darkred}{rgb}{0.3,0.1,0.0}
+\def\refColor{darkgreen}
+\hypersetup{%
+  colorlinks,
+  linkcolor=\refColor,
+  urlcolor=\refColor,
+  anchorcolor=\refColor,
+  citecolor=\refColor
+}
+\usepackage[margin=2cm]{geometry}
+\tolerance=1000
+\usepackage{listings}
+\usepackage[spanish]{babel}
+\usepackage{matematicas,ff++listings}
+\usepackage{pgf}
+
+\providecommand{\alert}[1]{\emph{#1}}
+\providecommand{\structure}[1]{#1}
+
+\newcommand{\FF}{\textit{FreeFem++}\xspace}
+\newcommand{\FFcs}{\textit{FreeFem-cs}\xspace}
+\renewcommand{\P}{\mathcal{P}_}
+\newcommand{\R}{{\mathbb R}}
+
+\title{Introducción práctica al Método de los Elementos Finitos con \FF}
+\author{J. Rafael Rodríguez Galván}
+\date{\today}
+
+
+\begin{document}
+
+\maketitle
+
+\begin{center}
+  \includegraphics[width=0.07\textwidth]{./logouca.png}\par
+  \emph{Máster en Matemáticas} \par \emph{Universidad de Cádiz}.
+  \par\vfill
+  \includegraphics[width=0.1\textwidth]{./cc-by-sa.png}
+  \par\medskip
+  \begin{small} \em
+    Este documento tiene licencia libre. En concreto, se permite su
+    uso bajo las condiciones de la licencia
+    \\
+    \href{http://creativecommons.org/licenses/by-sa/3.0/}{Creative
+      Commons Atribución-Compartir Igual}.
+  \end{small}
+\end{center}
+
+\setcounter{tocdepth}{2}
+\tableofcontents
+\vspace*{1cm}
+
+\include{parte1}
+\include{parte2}
+
+\end{document}
