@@ -1,5 +1,5 @@
 % Created 2011-07-10 dom 13:39
-\documentclass[11pt]{article}
+\documentclass[12pt]{article}
 \usepackage[latin1]{inputenc}
 %\usepackage[T1]{fontenc}
 \usepackage{fixltx2e}
@@ -26,11 +26,10 @@
   anchorcolor=\refColor,
   citecolor=\refColor
 }
-\usepackage[margin=2cm]{geometry}
+\usepackage[hmargin={4cm,3cm}]{geometry}
 \tolerance=1000
 \usepackage{listings}
-\usepackage[spanish]{babel}
-\usepackage{matematicas,ff++listings}
+\usepackage{math,ff++listings}
 \usepackage{pgf}
 
 \providecommand{\alert}[1]{\emph{#1}}
@@ -41,35 +40,858 @@
 \renewcommand{\P}{\mathcal{P}_}
 \newcommand{\R}{{\mathbb R}}
 
-\title{Introducción práctica al Método de los Elementos Finitos con \FF}
-\author{J. Rafael Rodríguez Galván}
-\date{\today}
+\newcounter{exercise}
+\newenvironment{exercise}{%
+  \stepcounter{exercise}
+  \subsubsection*{Exercise~\theexercise.}}
+{}
 
+\title{Introduction to Finite Elements with \FF}
+\author{J. Rafael Rodríguez Galván \\ Univesidad de Cádiz}
+\date{
+  % \includegraphics[width=0.13\textwidth]{./logo-unica.png}\par
+  ~
+  \\[5em]
+  \emph{Università degli studi di Cagliari}
+  \\[0.5em]
+  \emph{\today}
+  \\[9em]
+  \includegraphics[width=0.12\textwidth]{./cc-by-sa.png}
+  \\[1em]
+  \begin{small} \em
+    \href{http://creativecommons.org/licenses/by-sa/3.0/}{Creative
+      Commons Attribution-Share\_Alike License, \\ 
+      \scriptsize\url{http://creativecommons.org/licenses/by-sa/3.0/}}.
+  \end{small}
+}
 
+% -----------------------------------
 \begin{document}
+% -----------------------------------
 
 \maketitle
 
-\begin{center}
-  \includegraphics[width=0.07\textwidth]{./logouca.png}\par
-  \emph{Máster en Matemáticas} \par \emph{Universidad de Cádiz}.
-  \par\vfill
-  \includegraphics[width=0.1\textwidth]{./cc-by-sa.png}
-  \par\medskip
-  \begin{small} \em
-    Este documento tiene licencia libre. En concreto, se permite su
-    uso bajo las condiciones de la licencia
-    \\
-    \href{http://creativecommons.org/licenses/by-sa/3.0/}{Creative
-      Commons Atribución-Compartir Igual}.
-  \end{small}
-\end{center}
+%\large %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\newpage
 \setcounter{tocdepth}{2}
 \tableofcontents
 \vspace*{1cm}
 
-\include{parte1}
-\include{parte2}
+\section{Introduction}
+\label{sec:introduction}
 
+\subsection{The \FF environment}
+\label{sec:ff-environment}
+
+\alert{\FF},\footnote{\url{http://www.freefem.org/ff++}} is a package
+for \emph{numerical approximation of the solution of PDE} (partial
+differential equations), both 2D and 3D, by means of the \textit{Finite
+Element Method} (FEM) \emph{elementos finitos}. \FF is composed of:
+
+\begin{itemize}
+
+\item An interpreted \alert{programming Language}:
+  \begin{itemize}
+  \item Oriented to fast specification of those problems which can be
+    described by means of (linear and steady) PDE, and  also  to resolution
+    of those problems, using FEM.
+  \item Allows easy implementation of complex problems (nonlinear,
+    transient,...)
+  \end{itemize}
+
+\item An \alert{interpreter} for that language.
+  \begin{itemize}
+
+  \item Programs in FreeFem++ are interpreted (not compiled) at
+    runtime. In this sense, FreeFem++ is a \textit{scripting} language
+    (like Python, Matlab/Octave, Perl, and others).
+  \item \FF is \alert{open source}/\alert{free software} (GNU/GPL licenese).
+  \item There are different versions: \texttt{FreFem++},
+    \texttt{FreeFem++-nw}, \texttt{FreeFem++-mpi},\ldots{}
+  \end{itemize} % ends low level
+\end{itemize} % ends low level
+
+\FF is mainly developed by \textbf{F. Hetch}.
+\begin{center}
+  \includegraphics[width=0.3\linewidth]{./Hecht-portrait}
+\end{center}
+
+\subsection{What can you do with \FF?}
+Some examples related to Stokes equations:
+\begin{equation*}
+  \left\{
+  \begin{aligned}
+    -\nu\Delta \mathbf{u}+ \nabla p &= f 
+    \\ 
+    \nabla\cdot \mathbf{u} & = 0
+    \\ & + \text{boundary conditions},
+  \end{aligned}
+  \right.
+\end{equation*}
+where the unknowns are $\mathbf{u}=(u,v):\Omega\to\R$ (velocity field of fluid)
+and $p:\Omega\to\R$ pressure in each point of the domain.
+\begin{itemize}
+\item \href{videos/mediterraneo2.avi}{{}The Stokes/Navier-Stokes equations in Mediterranean sea}
+\item Why I like numerical simulation (as mathematician): it helps you
+  to understand
+  theory, \href{videos/eps-to-zero-P2-P1-streamlines-20s.avi}{in
+    this case, instability of a numerical scheme}
+\end{itemize}
+
+
+\subsection{Characteristics  of the \FF Language}
+\begin{itemize}
+
+\item Inspired by \alert{C/C++}.
+  \begin{itemize}
+  \item \alert{Similarities}: Syntax, strong typing\ldots{}
+  \item \alert{Does not include}: Pointers, object orienting, \ldots{}
+  \end{itemize}
+
+\item \alert{Oriented} to numerical simulation using the finite element method.
+  Possibilities:
+  \begin{itemize}
+  \item Definition of the geometry of a problem and 2D/3D meshing
+    (although \FF is not a CAD/CAE environment and then, if one wish
+    to use complex geometries, it is necessary to employ external tools.
+  \item Variety of available \alert{finite elements}:
+    $P_k$--Lagrange, $P_1$--bubble, $P_1$ discontinuous,
+    Raviart-Thomas\ldots{}
+  \item Flexibility for definition of problems which can be formulated
+    in terms of PDE (and expressed by a \alert{variational formulation})
+  \item Automation of the task of assemble FEM matrices involved in
+    underlying linear systems, so that this task is transparent to the
+    user.
+  \item Several algorithms for \alert{resolution of those linear
+      systems}: LU, Cholesky, Crout, CG, GMRES, UMFPACK\ldots{}
+  \item Facilities for \alert{post-processing and 2D/3D
+      visualización}.  Although \FF no is not specialized in
+    scientific visualización, it can be complemented with external
+    tools for high-quality graphics.
+  \item Many other issues:
+    \begin{itemize}
+    \item Excellent documentation (with a plenty of examples and
+      tutorials):
+      \url{http://www.freefem.org/ff++/ftp/freefem++doc.pdf}.
+    \item \textit{Matlab}--like matrix manipulation (or
+      Matlab/Octave/Python/Fortran--like). 
+    \item Automatic interpolation between meshes, adaptive refinement,...
+    \item Parallel (with MPI) version available
+      (\texttt{FreeFem++-mpi}) in UNIX systems.
+    \end{itemize}
+  \end{itemize}
+
+\end{itemize} % ends low level
+
+\section{Installation and first steps}
+\label{sec:inst-first-steps}
+
+The \FF package includes an interpreter for execution of code (code
+which is written in \FF language) and also some additional tools. But
+the standard edition does not include an integrated environment (with
+editor, error feedback, syntax highlighting, etc.).  The user is
+allowed to choose its preferred editor between different
+possibilities, as we comment below.
+
+In each operative system, there are different possibilities for the
+selection of an adequate editor (for instance \textit{Crimson Editor}
+or \textit{Notepad++} in Windows or \texttt{Emacs} in GNU/Linux, MacOS
+or Windows). The installation process is described, for some of them,
+in the \FF manual.
+
+Anyway, for a first approach to \FF, we recommend a tool called \FFcs,
+\url{http://www.ann.jussieu.fr/~lehyaric/ffcs/}, \FF and an integrated
+environment providing adequate characteristics and an easy
+installation process. Of course, advanced users may prefer other
+options.
+
+\subsection{\FFcs: an integrated environment for \FF}
+\label{sec:freefem-CS}
+
+\FFcs (\textit{CS} $\leftarrow$ Client/Server) is package which contains
+both \FF and an integrated environment for \FF providing an intuitive
+interface. It adds to \FF the following goodies:
+\begin{itemize}
+\item Integrated interface, aimed at making users comfortable.
+\item Color-coded editor.
+\item Automatic highlighting of \FF.
+\item Compilation errors, linked back to the EDP source code.
+\item Integrated graphics area for 2d and 3d.
+\item Online help including documentation in HTML.
+\item Multi-platform (Windows--GNU/Linux--MacOS).
+\end{itemize}
+
+
+\subsubsection{Installation}
+For installation, you can get your preferred version from
+the ``\textit{Download}'' link
+(\url{http://www.ann.jussieu.fr/~lehyaric/ffcs/install.php}) and
+follow the specific instructions for each  platform (which consist in
+only a few steps). For instance:
+
+\begin{itemize}
+\item \textit{Windows}: Execute the installation program and follow
+  usual steps. Once installed, click on the \textit{FreeFem++-cs} icon
+  and start using the application.
+\item \textit{GNU/Linux} (\textit{Ubuntu}, \textit{Debian} and
+  others): Decompress the \texttt{.tgz} in your preferred location (for
+  instance, in the desktop). Run the program \textit{FreeFem++-cs}
+  (located in the folder created when decompress). 
+\item \textit{MacOS}: Decompress the \texttt{.zip} file in your
+  preferred location (e.g. in the desktop). Run \textit{FreeFem++cs}.
+\end{itemize}
+
+\begin{exercise}
+  Download \FFcs from the web (choose the adequate version for your
+  preferred operative system) and install it.
+\end{exercise}
+
+\begin{exercise}
+  Open the FreeFem++ manual,
+  \url{http://www.freefem.org/ff++/ftp/freefem++doc.pdf}, and search
+  for recommended editors (in Section 1.1). Choose an editor, install
+  and configure it for use with \FF.
+\end{exercise}
+
+\subsubsection{First steps with \FFcs}
+
+\FFcs is composed of three different panels:
+\begin{enumerate}
+\item Editor with syntax highlighting (left).
+\item Messages returned by the interpreter (bottom).
+\item Graphics generated by our numerical simulation (right).
+end{enumerate}
+\end{enumerate}
+
+Other Characteristics:
+
+\begin{itemize}
+\item The FreeFem++ script (program) can be run at any time by
+  clicking in the \texttt{Run} buttom (top left), or pressing
+  \texttt{Ctrl+Shift+R}.
+\item The script can be stopped at any time by clicking the
+  \texttt{Kill} button (top left).
+\item Dragging a \FF script file into \FFcs (icon or editor) makes \FFcs
+  edit that script.
+\end{itemize}
+
+In the following exercise, we write a very simple FreeFem++ script
+which (a) plots a simple mesh in the unit square
+$[0,1]\times[0,1]$, which is defined by two subintervals (of $[0,1]$)
+in the $x$ axis and also two subintervals in $y$.
+\begin{exercise}
+  Write the following code and run it. Test that a graphic appears in the
+  right panel and a message is written in the bottom panel.
+  \lstset{language=freefem++}
+\begin{lstlisting}
+mesh Th = square(2,2); // Declare a mesh object and build it
+plot(Th);
+cout << "Hello world!" << endl;
+\end{lstlisting}
+\end{exercise}
+
+Former code may result quite familiar to C++ programmers.
+
+\subsection{A first realistic example}
+
+Now we are going to solve for the first time a PDE system by means of
+the FEM method. In further sections more complex problems are studied.
+Specifically, we solve the following example (Poisson equation with
+Dirichlet boundary conditions):
+\begin{equation*}
+  \begin{cases}
+    \text{Find } u:\bar\Omega \rightarrow \Rset 
+    \text{ such  that}
+    \\\noalign{\medskip}
+    \begin{aligned}
+      -\Delta u &= f \quad\text{in } \Omega,
+      \\
+      u &= 0 \quad\text{on } \partial\Omega.
+    \end{aligned}
+  \end{cases}
+\end{equation*}
+
+For that purpose, we proceed as follows:
+\begin{description}
+\item[Step 1.] Express the problem in (discrete) variational formulation:
+  \vspace{-2ex}
+  \begin{equation*}
+    \begin{cases}
+      \text{Find } u:\bar\Omega \rightarrow \Rset 
+      \text{ such that }
+      \\\noalign{\medskip}
+      \begin{aligned}
+        -\Delta u &= f \quad\text{in } \Omega,
+        \\
+        u &= 0 \quad\text{on } \partial\Omega.
+      \end{aligned}
+    \end{cases}
+    \qquad \leadsto \qquad
+    \begin{cases}
+      \text{Find $u_h\in X_{h}$ such that} 
+      \\\noalign{\medskip}
+      \begin{aligned}
+        \int_\Omega \nabla u_h \cdot \nabla v_h = \int_\Omega f \cdot
+        v_h,
+        \quad\text{for each } v_h\in X_{h}.
+      \end{aligned}
+    \end{cases}
+  \end{equation*}
+
+\item[Step 2.] Translate the variational formulation into \FF
+  language. 
+  Supposing that the domain, $\Omega$, is given by the unit circle, we
+  can write the following script :
+  \lstset{language=freefem++}
+\begin{lstlisting}
+border gamma(t=0, 2*pi) { x=cos(t); y=sin(t); } // Define boundary
+mesh Th = buildmesh(gamma(20)); // Build mesh with 20 intervals on boundary
+fespace Xh(Th,P1); // Define P1 finite element space
+Xh u,v; // Build two functions in this space (unknown and test function)
+func f = exp(x)*sin(y);  // Right hand side
+solve Dirichlet(u,v) =   // Define variational formulation  
+  int2d(Th) ( dx(u)*dx(v) + dy(u)*dy(v) )
+  - int2d(Th) ( f*v )
+  + on( gamma, u=0 );
+plot(u);  // Show results
+\end{lstlisting}
+
+\end{description}
+
+This piece of code contains the fundamentals of FEM with \FF.
+\begin{enumerate}
+\item In lines 1 and 2 we define the circular domain. The technique
+  consists of the parametrization of the boundary. Any domain with
+  parametrizable boundary can be easily introduced in \FF.  For other
+  domains, one has to use a specific tool for mesh construction and
+\item In line 3 we define the FE (finite element) space,
+  $\P1$--Lagrange in this case, and in line 4 we declare two variables
+  in this space. We intend to use the first one, \texttt{u}, as the FE
+  unknown (the \texttt{trial} function), and the second one, \texttt{v} 
+  as the \texttt{test} function.
+\item In line 5 we define a function. Note that standard variables
+  \texttt{x} and \texttt{y} are predefined and must not be declared.
+\item In lines 6--9 we solve the variational problem. Note that those
+  lines constitute a quasi-literal transcription of the variational
+  problem formulated in \texttt{Step 1}. Some comments:
+  \begin{enumerate}
+  \item By default, PDE operators like gradient ($\nabla$) are not
+    predefined (although they can be defined using macros, as we see
+    in a further section). So one must use the operators \texttt{dx}
+    ($\frac{\partial}{\partial x}$) and \texttt{dy}
+    ($\frac{\partial}{\partial y}$). For 3D programs, also \texttt{dz}
+    can be employed.
+  \item Dirichlet conditions are imposed as the ``artificial'' sum of
+    a term to the bilinear form.
+  \end{enumerate}
+
+\item Finally, in line 10 we plot the obtained solution. Scalar data
+  (as, in this case, $u$) is plotted by contour plots, while vector
+  data is plotted as arrow field (for instance, the velocity unknown
+  in the context of Stokes equations).
+\end{enumerate}
+
+
+\subsection{Saving to VTK for high-quality graphics}
+
+VTK consists of an open source C++ library for visualization of
+different types of data (scalar, vector, tensor, etc.). Last versions
+of FreeFem++ include a module (called \texttt{iovtk}) which can be
+loaded for use VTK. This way users can save any FE function to a
+\texttt{.vtk} file and then employ any of the available advanced
+applications for manipulation and visualization of the data contained
+in that file. In section~\ref{sec:brief-intro-paraview} we delve into
+one of those applications, called
+Paraview\footnote{\url{http://www.paraview.org/}}.
+
+The following code can be appended to the script above for saving the
+solution, $u$, into a VTK file. 
+\lstset{language=freefem++}
+\begin{lstlisting}
+load "iovtk";
+savevtk("/tmp/output.vtk", Th, u, dataname="Temperature");
+\end{lstlisting}
+
+The module \texttt{iovtk} provides the function
+\texttt{savevtk}. Their compulsory parameters are: (1) name of the
+output VTK file, (2) name of the mesh, (3) FE function to be
+saved. More than one function can be saved in the same file, as we
+will see below. The last parameter is optional (but recommended) and
+provides a name for each saved function. In this case, assuming that
+the solution represents the equilibrium state of a heating experiment,
+the only data set is called ``Temperature''. We can use this name to
+access the data in the future (for instance using Paraview).
+
+
+\section{Addressing more complex problems}
+\label{sec:complex-problems}
+
+In the section we go beyond the Poisson problem and generalize it in
+different ways.
+\begin{enumerate}
+\item Introducing other kind of boundary conditions (Neumann b.c.)
+\item Handling transient (time dependent) problems (Heat equation).
+\end{enumerate}
+
+\subsection{Poisson problem with mixed boundary conditions}
+\label{sec:poisson-problem-with-mixed-bc}
+
+We set the problem: given
+\begin{itemize}
+\item $\Omega\subset\R^2$, with smooth piecewise boundary, where we
+  distinguish two zones: 
+  $\partial\Omega=\Gamma_0\cup\Gamma_1$
+\item $\nu>0$, \quad $f:\Omega\to\R$, \quad $g:\Gamma_0\to\R$
+\end{itemize}
+Given $f: \Omega \to \Rset$, $g_0:\Gamma_0\to\Rset$ and
+$g_2:\Gamma_1\to\Rset$, we try to find $u:\bar\Omega \rightarrow \R$
+such that:
+\begin{equation}
+  \label{eq:poisson-mixto}
+  \begin{cases}
+    \begin{aligned}
+      -\nu\Delta u &= f \quad \text{ in } \Omega, \\
+      u &= g_0 \quad \text{ on } \Gamma_0, \\
+      \frac{\partial u}{\partial n} &= g_1 \quad \text{ on } \Gamma_1.
+    \end{aligned}
+  \end{cases}
+\end{equation}
+Then one has have a (non homogeneous) Dirichlet b.c. in $\Gamma_0$ and
+a Neumann b.c on $\Gamma_1$. Remember that last condition means, means
+$\nabla u \cdot n=g_1$, where $n$ is the exterior normal vector.
+
+\begin{itemize}
+\item The theory for \textbf{non-homogeneous Dirichlet} conditions,
+  $u|_{\Gamma_0}=g_0$, is based on writing the solution as
+  $$
+  u = u_0 + u_D,
+  $$
+  where $u_0$ is a solution of the homogeneous problem
+  ($u|_{\Gamma_0}=0$) while $u_D$ verifies $u|_{\Gamma_0}=g_0$.
+  In practice, for Dirichlet conditions one proceed as follows:
+  \begin{enumerate}
+  \item Build the FE linear system $Ax=b$, where $A$ comes from a
+    bilinear form, $a(\cdot,\cdot)$ and $b$ comes from a linear form,
+    $L(\cdot)$. Both of $A$ and $b$ are, typically constructed by
+    quadrature formulae in triangles.
+  \item Select the rows of $A$ and $b$ which correspond to equations
+    relative to degrees of freedom (for instance vertices of the
+    triangles) placed on $\Gamma_D$. Then modify them, imposing
+    explicitly the value of $u$ on that degrees of freedom.
+  \end{enumerate}
+  This issue is automatized by \FF and then we are not going
+  deeper.
+
+  % writing the variational formulation, we  assume the homogeneous
+  % Dirichlet condition
+  % $$u=0 \text{ on } \Gamma_1,$$
+  % and imposing later $u=g_0$ on $\Gamma_0$. 
+\item But Neumann boundary conditions appear in a natural way in the
+  variational formulation. Specifically, when the Green formula
+  (integration by parts) is applied, one gets the following problem:
+  \begin{equation*}
+      \begin{cases}
+      \text{Find $u_h\in U_{h}$ such that} 
+      \\\noalign{\medskip}
+      \begin{aligned}
+        \int_\Omega \nabla u_h \cdot \nabla v_h = \int_\Omega f\, v_h 
+        - \int_{\Gamma_1} g_1\, v_h
+        \quad\text{for each } v_h\in U_{h},
+      \end{aligned}
+    \end{cases}
+  \end{equation*}
+  being $U_h$ the set of functions $u_h:\Omega\to\Rset$ such that
+  \begin{itemize}
+  \item $u_h|_T \in \mathbb{P}_k[x]$ (polynomials of degree $k$) for
+    all $T\in \mathcal{T}_h$ and
+  \item $u_h|_{\Gamma_0}=0$.
+  \end{itemize}
+\end{itemize}
+
+\subsubsection{FreeFem++ programming}
+
+\paragraph{Step 1: Pre-processing}
+
+\lstset{language=freefem++}
+\begin{lstlisting}
+  // 1. Pre-proceso
+
+  // 1.1. Mesh
+  border gamma0(t=2*pi, 0) { x=1.5*cos(t); y=sin(t); }
+  border gamma1(t=0, 2*pi) { x=4*cos(t); y=4*sin(t); }
+  mesh Th = buildmesh(gamma1(40)+gamma0(30));
+  plot(Th, wait=1);
+
+  // 1.2. FE space and functions 
+  fespace Vh(Th,P1);
+  Vh u,v;
+
+  // 1.3. Definition of data
+  real nu=0.3;
+  func f=8*(x^2+y^2);
+  func g=400;
+\end{lstlisting}
+
+\paragraph{Step 2: Processing}
+
+\lstset{language=freefem++}
+\begin{lstlisting}[firstnumber=19]
+  solve example1(u,v)=
+  // Bilinear form:
+  int2d(Th)( nu*( dx(u)*dx(v) + dy(u)*dy(v) ))
+  // Linear lorm:
+  - int2d(Th)( f*v ) 
+  - int1d(Th, gamma1)( nu*g*v )
+  // Dirichlet boundary condition
+  + on(gamma0, u=g);
+\end{lstlisting}
+
+\paragraph{Step 3: Post-processing}
+
+\lstset{language=freefem++}
+\begin{lstlisting}
+  // 3. Post-proceso
+  plot(u, value=1, fill=1, wait=1);
+\end{lstlisting}
+
+\subsection{The heat equation}
+\label{sec:heat-equation}
+
+
+Former examples were steady, namely time independent. Now we set the
+first transient problem, where the time variable is present. given
+\begin{itemize}
+\item $\Omega\subset\R^2$, with smooth piecewise boundary,  $\partial\Omega=\Gamma_0\cup\Gamma_1$
+\item $T>0$: final time, $n$: number of time iterations in $[0,T]$.
+\item $u_0$: $\Omega\to\R$: temperature at initial time.
+\item $\nu>0$, $f:\Omega\times(0,T)\to\R$ (heat source in the domain).
+  $u_{\text{ext}}:\Gamma_1\times(0,T)\to\R$ (heat source on boundary $\Gamma_1$).
+\end{itemize}
+
+For time discretization, consider $n+1$ time instants in $[0,T]$, $t_k=
+\verb|dt|\cdot k$, $k=0, ..., n$, being $\verb|dt|=T/n$ the time
+step.
+
+The Euler method reads:
+\begin{itemize}
+\item Initialization: for $k=0$, take $u^0=u(t=0)=u_0$
+\item Step $k$: given $u(t_k)$, find $u^{k+1}\in U_h$ (defined in
+  section~\ref{sec:poisson-problem-with-mixed-bc}) such that 
+% Find \quad $u:\bar\Omega\times(0,T) \rightarrow \R$, representing
+% temperature evolution in $\Omega$, such that:
+\begin{equation*}
+  a(u_h,v_h) = b(v_h) \quad \forall v_h\in U_h,
+\end{equation*}
+where
+\begin{equation*}
+    \begin{aligned}
+      a(u,v)&=\int_\Omega\frac{u^{k+1}}{dt} v + \nu\int_\Omega \nabla
+      u \cdot \nabla v,
+      \\
+      b(v)  &= \int_\Omega f \cdot v
+        +\int_\Omega \frac{u^{k}}{dt} v
+    \end{aligned}
+\end{equation*}
+% \begin{equation}
+%   \begin{cases}
+%     \frac{\partial u}{\partial t} -\nu\Delta u = f \text{ in } \Omega\times(0,T), \\
+%     u = g_0 \text{ on } \Gamma_0\times(0,T), \\
+%     u = g_1 \text{ on } \Gamma_1\times(0,T), \\    
+%   \end{cases}
+% \end{equation}
+
+  
+ \end{itemize}
+% ecuación anterior, obtendremos el siguiente sistema en tiempo: En la
+% etapa inicial ($k=0$), tomamos $u^0=u(t=0)=u_0$. Conocidos los valores
+% $u^0,...,u^k$, que aproximan a los valores de $u(t_0),...,u(t_k)$, en
+% la etapa $k+1$, calculamos $u^{k+1}$ como solución de: hallar $u\in
+% H^1(\Omega)$ tal que $u=g_0$ en $\Gamma_0$, $u=g_1$ en $\Gamma_1$ y
+% \begin{equation*}
+%   \left\{
+%     \begin{aligned}
+%       &\int_\Omega\frac{u^{k+1}-u^k}{dt} v + \nu\int_\Omega \nabla u \cdot \nabla v 
+%         = \int_\Omega f \cdot v
+%       \\
+%       &\text{para todo $v\in H_0^1(\Omega)$.}
+%     \end{aligned}
+%   \right.
+% \end{equation*}
+% Como se comentó antes, el problema anterior puede reformulado para
+% adaptarlo al marco de Lax-Milgram y, así, demostrar que existe una
+% única solución débil. A continuación, si pasamos al segundo miembro
+% los datos conocidos, podemos identificar las formas bilineal y lineal
+% siguientes: 
+% \begin{equation*}
+%     \begin{aligned}
+%       a(u,v)&=\int_\Omega\frac{u^{k+1}}{dt} v + \nu\int_\Omega \nabla
+%       u \cdot \nabla v,
+%       \\
+%       b(v)  &= \int_\Omega f \cdot v
+%         +\int_\Omega \frac{u^{k}}{dt} v
+%     \end{aligned}
+% \end{equation*}
+% y a partir de ahí escribir el programa que se muestra a continuación, que
+% calculará la solución en cada etapa de tiempo (a través de un bucle
+% \verb|for|) y, en cada etapa, grabará en un fichero postscript la
+% solución correspondiente.
+
+\subsubsection{\FF program}
+
+\lstset{language=freefem++}
+\begin{lstlisting}
+load "iovtk"; // We will output vtk 
+
+// 1. Pre-processing
+
+// 1.1. Mesh
+real R=1;
+border gamma0(t=0, pi/4)    { x=R*cos(t); y=R*sin(t); }
+border gamma1(t=pi/4, 2*pi) { x=R*cos(t); y=R*sin(t); }
+
+int n=30;
+mesh Th = buildmesh(gamma0(n)+gamma1(9*n));
+plot(Th, wait=1);
+
+// 1.2. FE space and functions
+fespace Vh(Th,P1);
+Vh u, v;
+Vh uold;
+
+macro gradient(u) [dx(u), dy(u)] // End Of Macro
+
+// 1.3. Data definition
+real nu=1;
+real t=0, T=1;  // Time interval [0,T]
+int  N=100; // Number of time iterations
+real dt=T/N;  // Time step
+
+func f=0; //8*(x^2+y^2);
+// func real g1(real x, real y, real t) {
+//   return 40*t;
+// }
+func real g0(real x, real y, real t) {
+  return 100*(1-1./(t+1));
+}
+func real g1(real x, real y, real t) {
+  return 0;
+}
+
+func u0=0; // Init
+
+uold = u0;
+
+// 2. Processing
+
+// Declare (but not solve) the heat equation variational problem
+problem heatEquation(u,v)=
+  // Bilineal form:
+  int2d(Th)(
+    u*v/dt +
+    nu*gradient(u)'*gradient(v) // ' means transpose
+  )
+  // Linear form
+  - int2d(Th)( uold*v/dt + f*v ) 
+  - int1d(Th, gamma1) ( g1(x,y,t)*v ) // Neumann boundary condtion
+
+  // Dirichlet boundary condtion
+  + on(gamma0, u=g0(x,y,t));
+
+// Time iteration loop
+for (int k=0; k<N; ++k ) {
+
+  t = t + dt;    // Increase current time
+  heatEquation;  // Solve the PDE variational problem
+  uold = u;      // Save solution for next time step
+  
+  // 3. Post-processing (save to VTK for further displaying with Paraview)
+  string filename="/tmp/heat_equation-" + k + ".vtk";
+  savevtk(filename, Th, u, dataname="Temperature");
+}
+\end{lstlisting}
+% -------------------
+
+\subsection{The Stokes equations}
+\label{sec:stokes}
+
+The Stokes equations can be considered as the linear steady version of
+Navier-Stokes equations (which describe the behaviour of a newtoninan
+fluid as atmosphere, ocean, flux around vehicles, etc.
+\begin{equation*}
+  \left\{
+  \begin{aligned}
+    -\nu\Delta \mathbf{u}+ \nabla p &= f 
+    \\ 
+    \nabla\cdot \mathbf{u} & = 0
+    \\ & + \text{boundary conditions},
+  \end{aligned}
+  \right.
+\end{equation*}
+where the unknowns are: $\mathbf{u}=(u,v):\Omega\to\R$ (velocity field
+of fluid) and $p:\Omega\to\R$ pressure in each point of the domain.
+Thus the first equation must be understood in vectorial way,
+specifically, in the 2D case:
+\begin{align*}
+  \Delta u + \partial_x p &= f_1, \\
+  \Delta v + \partial_y p &= f_2,
+\end{align*}
+where  $f=(f_1,f_2)$.
+
+In this section we show a usual test for the Stokes 2D simultion,
+which is know as \textbf{cavity test}. This test is usually run in a
+rectangular domain but, in this case, with the purpose of illustrate
+the construction in \FF of complex parametric geometries, we have
+introduced some holes in the rectangular domain. They are defined by
+parametric figures which are known as
+conchoids\footnote{\url{http://en.wikipedia.org/wiki/Conchoid_\%28mathematics\%29}}.  
+
+Homogeneous Dirichlet b.c., $(u,v)=(0,0)$, are imposed for
+$\mathbf{u}$ on the whole boundary excepting the top line, where we
+fix $(u,v)=(1,0)$  (positive horizontal velocity). We use the stable
+FE combination  $\P2/\P1$ (polynomials with degree $2$ for velocity
+and degree $1$ for pressure).
+
+\subsubsection{Programación con \FF}
+
+\lstset{language=freefem++}
+\begin{lstlisting}
+// 2D Stokes equations
+// Cavity test in a domain with some parametric holes
+
+//,------------------------------------------------
+//| STEP 1. Defining the domain and meshing it
+//`------------------------------------------------
+
+// Macro for the 2D boundary defining a hole. They are parametric
+// curves called "conchoids". In the macro: 
+// n = number of 'petals', P = center of the hole
+int NMAX=20;
+macro conchoid(name, n, P, thelabel) 
+ name(i=0,NMAX) {
+    real a=1.0, b=2.0;
+    real theta = i*2*pi/NMAX;
+    real rho = a * cos(n*theta)+b;
+    x = P[0] + rho*cos(theta);
+    y = P[1] + rho*sin(theta);
+    label = thelabel;
+} // EOM
+
+// Definition of some conchoids
+border conchoid(c2,2,[0,0]   ,0);
+border conchoid(c3,3,[-10,0] ,0);
+border conchoid(c4,4,[0,0]   ,0);
+border conchoid(c5,5,[10,0]  ,0);
+border conchoid(c6,6,[0,0]   ,0);
+border conchoid(c7,7,[0,0]   ,0);
+
+// External rectangle
+real xcoor = 15, ycoor = 5;
+border lx1(k=-xcoor,xcoor) { x=k; y=-ycoor; label=1; }
+border lx2(k=-xcoor,xcoor) { x=k; y=+ycoor; label=3; }
+border ly1(k=-ycoor,ycoor) { x=-xcoor; y=k; label=2; }
+border ly2(k=-ycoor,ycoor) { x=+xcoor; y=k; label=2; }
+
+int nx=40, ny=20, nc=50;
+mesh Th = buildmesh( ly1(-ny)+lx1(nx)+ly2(ny)+lx2(-nx) 
+    + c3(-nc) + c4(-nc) + c5(-nc) );
+
+//,--------------------------------------------------------
+//| STEP 2. Resolution of Stokes problem in previous domain
+//`--------------------------------------------------------
+
+fespace Uh(Th,P2); Uh u,v,uu,vv;  // Velocity functions
+fespace Ph(Th,P1); Ph p,pp;       // Pressure functions
+
+real upperVelocity=1;
+
+macro grad(u) [dx(u), dy(u)] // end of macro
+  
+// Definition of Stokes problem
+
+problem stokes2d( [u,v,p], [uu,vv,pp], solver=LU) =
+    int2d(Th)(
+	grad(u)'*grad(uu) + grad(v)'*grad(vv) 
+	+ grad(p)'*[uu,vv] + pp*(dx(u)+dy(v)) //'
+	- 1e-10*p*pp )
+  + on(0,1,2,u=0,v=0) + on(3,u=upperVelocity,v=0);
+
+stokes2d;  // Resolution of Stokes problem
+
+// Save to VTK (for high quality plotting)  
+load "iovtk";
+savevtk("/tmp/stokes.vtk", Th, [u,v,0], p);
+\end{lstlisting}
+
+
+\appendix
+
+\section{Paraview}
+\label{sec:brief-intro-paraview}
+
+ParaView is an open source multiple-platform application for
+interactive, scientific visualization. It was developed to analyze
+extremely large datasets using distributed memory computing
+resources. It can be run on supercomputers to analyze datasets of
+terascale as well as on laptops for smaller data.
+
+For visualization of data, that lives in a mesh where the simulation
+was performed, there are basically three steps:
+\begin{enumerate}
+\item \textit{Reading} data into Paraview (from a VTK file)
+\item \textit{Filtering}, that is applying one or more filters in order to
+  generate, extract or derive features from data.
+\item \textit{Rendering} an image from the data and adjusting the
+  viewing parameters for improve the final visualization.
+\end{enumerate}
+
+This tree steps are controlled through a panel in the right, called
+\texttt{Pipeline browser}. The pipeline concept consists on a chain of
+modules, starting from the data stored in a file. Each
+of them takes in some data, operates on it and presents the result in
+a dataset.
+From the Paraview users guide:
+\begin{quote}\small
+  ``Reading data into ParaView is often as simple as selecting
+  \texttt{Open} from the \textit{File} menu, and then clicking the
+  glowing \textit{Accept} button on the reader's \textit{Object
+    Inspector} tab. ParaView comes with support for a large number of
+  file formats, and its modular architecture makes it possible to add
+  new file readers.  Once a file is read, ParaView automatically
+  renders it in a view. In ParaView, a view is simply a window that
+  shows data. There are different types of views, ranging from
+  qualitative computer graphics rendering of the data to quantitative
+  spreadsheet presentations of the data values as text. ParaView picks
+  a suitable view type for your data automatically, but you are free
+  to change the view type, modify the rendering parameters of the data
+  in the view, and even create new views simultaneously as you see fit
+  to better understand what you have read in. Additionally, high-level
+  meta information about the data including names, types and ranges of
+  arrays, temporal ranges, memory size and geometric extent can be
+  found in the \textit{Information} tab.''
+\end{quote}
+Advanced data processing can be done using the Python Programmable
+filter with VTK, NumPy, SciPy and other Python modules.
+
+\bigskip
+
+For further details:
+\begin{enumerate}
+\item Video showing how to use FreeFem++ and Paraview for
+  visualization of 2D and 3D cavity tests for the Stokes Equations
+  (partially in
+  spanish). \url{https://www.youtube.com/watch?v=wChDeo2A03E}
+\item Paraview Wikipedia page (in which this appendix is
+  based). \url{http://en.wikipedia.org/wiki/ParaView}.
+\item Resources in the web, for instance
+  \url{http://vis.lbl.gov/NERSC/Software/paraview/docs/ParaView.pdf}.
+\item The paraview users guide (how to unleash the beast!)
+  \url{http://denali.princeton.edu/Paraview/ParaViewUsersGuide.v3.14.pdf}
+\end{enumerate}
 \end{document}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% ispell-local-dictionary: "english"
+%%% End: 
