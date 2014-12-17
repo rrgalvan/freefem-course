@@ -47,14 +47,14 @@
 {}
 
 \title{Introduction to Finite Elements with \FF}
-\author{J. Rafael Rodríguez Galván \\ Univesidad de Cádiz}
+\author{J. Rafael Rodríguez Galván \\ Universidad de Cádiz}
 \date{
   % \includegraphics[width=0.13\textwidth]{./logo-unica.png}\par
   ~
   \\[5em]
   \emph{Università degli studi di Cagliari}
   \\[0.5em]
-  \emph{\today}
+  \emph{June 23-27, 2014}
   \\[9em]
   \includegraphics[width=0.12\textwidth]{./cc-by-sa.png}
   \\[1em]
@@ -87,7 +87,7 @@
 \alert{\FF},\footnote{\url{http://www.freefem.org/ff++}} is a package
 for \emph{numerical approximation of the solution of PDE} (partial
 differential equations), both 2D and 3D, by means of the \textit{Finite
-Element Method} (FEM) \emph{elementos finitos}. \FF is composed of:
+Element Method} (FEM). \FF is composed of:
 
 \begin{itemize}
 
@@ -106,7 +106,7 @@ Element Method} (FEM) \emph{elementos finitos}. \FF is composed of:
   \item Programs in FreeFem++ are interpreted (not compiled) at
     runtime. In this sense, FreeFem++ is a \textit{scripting} language
     (like Python, Matlab/Octave, Perl, and others).
-  \item \FF is \alert{open source}/\alert{free software} (GNU/GPL licenese).
+  \item \FF is \alert{open source}/\alert{free software} (GNU GPL license).
   \item There are different versions: \texttt{FreFem++},
     \texttt{FreeFem++-nw}, \texttt{FreeFem++-mpi},\ldots{}
   \end{itemize} % ends low level
@@ -118,7 +118,7 @@ Element Method} (FEM) \emph{elementos finitos}. \FF is composed of:
 \end{center}
 
 \subsection{What can you do with \FF?}
-Some examples related to Stokes equations:
+Some examples related to 2D steady Stokes equations:
 \begin{equation*}
   \left\{
   \begin{aligned}
@@ -129,14 +129,15 @@ Some examples related to Stokes equations:
   \end{aligned}
   \right.
 \end{equation*}
-where the unknowns are $\mathbf{u}=(u,v):\Omega\to\R$ (velocity field of fluid)
+where the unknowns are $\mathbf{u}=(u,v):\Omega\to\R^2$ (velocity field of fluid)
 and $p:\Omega\to\R$ pressure in each point of the domain.
 \begin{itemize}
-\item \href{videos/mediterraneo2.avi}{{}The Stokes/Navier-Stokes equations in Mediterranean sea}
+\item \href{videos/mediterraneo2.avi}{{}The Stokes/Navier-Stokes
+    equations in Mediterranean sea (video).}
 \item Why I like numerical simulation (as mathematician): it helps you
-  to understand
-  theory, \href{videos/eps-to-zero-P2-P1-streamlines-20s.avi}{in
-    this case, instability of a numerical scheme}
+  to understand theory
+  (\href{videos/eps-to-zero-P2-P1-streamlines-20s.avi}{in this video,
+    instability of a numerical scheme}).
 \end{itemize}
 
 
@@ -152,15 +153,15 @@ and $p:\Omega\to\R$ pressure in each point of the domain.
 \item \alert{Oriented} to numerical simulation using the finite element method.
   Possibilities:
   \begin{itemize}
-  \item Definition of the geometry of a problem and 2D/3D meshing
-    (although \FF is not a CAD/CAE environment and then, if one wish
-    to use complex geometries, it is necessary to employ external tools.
+  \item Definition of the geometry of a problem and 2D/3D meshing.
+    Although \FF is not a CAD/CAE environment and then, for complex
+    geometries, it is necessary to use external tools.
   \item Variety of available \alert{finite elements}:
     $P_k$--Lagrange, $P_1$--bubble, $P_1$ discontinuous,
     Raviart-Thomas\ldots{}
   \item Flexibility for definition of problems which can be formulated
     in terms of PDE (and expressed by a \alert{variational formulation})
-  \item Automation of the task of assemble FEM matrices involved in
+  \item Automation of the task of assembling FEM matrices involved in
     underlying linear systems, so that this task is transparent to the
     user.
   \item Several algorithms for \alert{resolution of those linear
@@ -190,21 +191,23 @@ and $p:\Omega\to\R$ pressure in each point of the domain.
 The \FF package includes an interpreter for execution of code (code
 which is written in \FF language) and also some additional tools. But
 the standard edition does not include an integrated environment (with
-editor, error feedback, syntax highlighting, etc.).  The user is
-allowed to choose its preferred editor between different
+editor, error feedback, syntax highlighting, etc.). User is
+allowed to choose his/her preferred editor between different
 possibilities, as we comment below.
 
 In each operative system, there are different possibilities for the
-selection of an adequate editor (for instance \textit{Crimson Editor}
-or \textit{Notepad++} in Windows or \texttt{Emacs} in GNU/Linux, MacOS
-or Windows). The installation process is described, for some of them,
-in the \FF manual.
+selection of an adequate editor, for instance:
+\begin{itemize}
+\item \textit{Crimson Editor} or \textit{Notepad++} in Windows,
+\item \texttt{Emacs} in GNU/Linux, MacOS or Windows.
+\item ...
+\end{itemize}
+See \FF manual for details.
 
-Anyway, for a first approach to \FF, we recommend a tool called \FFcs,
-\url{http://www.ann.jussieu.fr/~lehyaric/ffcs/}, \FF and an integrated
-environment providing adequate characteristics and an easy
-installation process. Of course, advanced users may prefer other
-options.
+Anyway, for a first approach to \FF, we recommend \FFcs,
+\url{http://www.ann.jussieu.fr/~lehyaric/ffcs/}. \FFcs is an
+integrated environment providing \FF, and adequate editor and other
+characteristics. Of course, advanced users may prefer other options.
 
 \subsection{\FFcs: an integrated environment for \FF}
 \label{sec:freefem-CS}
@@ -296,9 +299,9 @@ Former code may result quite familiar to C++ programmers.
 \subsection{A first realistic example}
 
 Now we are going to solve for the first time a PDE system by means of
-the FEM method. In further sections more complex problems are studied.
-Specifically, we solve the following example (Poisson equation with
-Dirichlet boundary conditions):
+the FEM method. More complex problems are left for further sections.
+Specifically, here we are going to solve the following example (Poisson
+equation with homogeneous Dirichlet boundary conditions):
 \begin{equation*}
   \begin{cases}
     \text{Find } u:\bar\Omega \rightarrow \Rset 
@@ -315,7 +318,7 @@ Dirichlet boundary conditions):
 For that purpose, we proceed as follows:
 \begin{description}
 \item[Step 1.] Express the problem in (discrete) variational formulation:
-  \vspace{-2ex}
+  \vspace{-1ex}
   \begin{equation*}
     \begin{cases}
       \text{Find } u:\bar\Omega \rightarrow \Rset 
@@ -327,14 +330,14 @@ For that purpose, we proceed as follows:
         u &= 0 \quad\text{on } \partial\Omega.
       \end{aligned}
     \end{cases}
-    \qquad \leadsto \qquad
+    \hspace{-1em}\leadsto\quad
     \begin{cases}
       \text{Find $u_h\in X_{h}$ such that} 
       \\\noalign{\medskip}
       \begin{aligned}
         \int_\Omega \nabla u_h \cdot \nabla v_h = \int_\Omega f \cdot
         v_h,
-        \quad\text{for each } v_h\in X_{h}.
+        \quad \forall v_h\in X_{h}.
       \end{aligned}
     \end{cases}
   \end{equation*}
