@@ -26,7 +26,7 @@
   anchorcolor=\refColor,
   citecolor=\refColor
 }
-\usepackage[hmargin={4cm,3cm}]{geometry}
+\usepackage[hmargin={2.5cm,2cm}]{geometry}
 \tolerance=1000
 \usepackage{listings}
 \usepackage{math,ff++listings}
@@ -47,23 +47,47 @@
 {}
 
 \title{Introduction to Finite Elements with \FF}
-\author{J. Rafael Rodríguez Galván \\ Universidad de Cádiz}
+\author{J. Rafael Rodríguez Galván \\\noalign{\smallskip} Universidad de Cádiz}
 \date{
   % \includegraphics[width=0.13\textwidth]{./logo-unica.png}\par
   ~
   \\[5em]
-  \emph{Università degli studi di Cagliari}
+  \textsf{\textit{Máster interuniversitario en Matemáticas. Universidad de Cádiz.}}
   \\[0.5em]
-  \emph{June 23-27, 2014}
+  \emph{February, 2016}
   \\[9em]
   \includegraphics[width=0.12\textwidth]{./cc-by-sa.png}
   \\[1em]
   \begin{small} \em
     \href{http://creativecommons.org/licenses/by-sa/3.0/}{Creative
-      Commons Attribution-Share\_Alike License, \\ 
+      Commons Attribution-Share\_Alike License, \\
       \scriptsize\url{http://creativecommons.org/licenses/by-sa/3.0/}}.
   \end{small}
 }
+
+% -----------------------------------
+% Code listing style
+% -----------------------------------
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.94,0.94,0.95}
+
+\lstdefinestyle{mystyle}{
+    % backgroundcolor=\color{backcolour},
+    % commentstyle=\color{codegreen},
+    % keywordstyle=\color{magenta},
+    % numberstyle=\tiny\color{codegray},
+    % stringstyle=\color{codepurple},
+    % % basicstyle=\footnotesize,
+    % breakatwhitespace=false,
+    % breaklines=true,
+    % numbers=left,
+    % numbersep=5pt,
+}
+\lstset{style=mystyle}
+% -----------------------------------
+
 
 % -----------------------------------
 \begin{document}
@@ -122,8 +146,8 @@ Some examples related to 2D steady Stokes equations:
 \begin{equation*}
   \left\{
   \begin{aligned}
-    -\nu\Delta \mathbf{u}+ \nabla p &= f 
-    \\ 
+    -\nu\Delta \mathbf{u}+ \nabla p &= f
+    \\
     \nabla\cdot \mathbf{u} & = 0
     \\ & + \text{boundary conditions},
   \end{aligned}
@@ -176,7 +200,7 @@ and $p:\Omega\to\R$ pressure in each point of the domain.
       tutorials):
       \url{http://www.freefem.org/ff++/ftp/freefem++doc.pdf}.
     \item \textit{Matlab}--like matrix manipulation (or
-      Matlab/Octave/Python/Fortran--like). 
+      Matlab/Octave/Python/Fortran--like).
     \item Automatic interpolation between meshes, adaptive refinement,...
     \item Parallel (with MPI) version available
       (\texttt{FreeFem++-mpi}) in UNIX systems.
@@ -240,7 +264,7 @@ only a few steps). For instance:
 \item \textit{GNU/Linux} (\textit{Ubuntu}, \textit{Debian} and
   others): Decompress the \texttt{.tgz} in your preferred location (for
   instance, in the desktop). Run the program \textit{FreeFem++-cs}
-  (located in the folder created when decompress). 
+  (located in the folder created when decompress).
 \item \textit{MacOS}: Decompress the \texttt{.zip} file in your
   preferred location (e.g. in the desktop). Run \textit{FreeFem++cs}.
 \end{itemize}
@@ -286,7 +310,6 @@ in the $x$ axis and also two subintervals in $y$.
 \begin{exercise}
   Write the following code and run it. Test that a graphic appears in the
   right panel and a message is written in the bottom panel.
-  \lstset{language=freefem++}
 \begin{lstlisting}
 mesh Th = square(2,2); // Declare a mesh object and build it
 plot(Th);
@@ -304,7 +327,7 @@ Specifically, here we are going to solve the following example (Poisson
 equation with homogeneous Dirichlet boundary conditions):
 \begin{equation*}
   \begin{cases}
-    \text{Find } u:\bar\Omega \rightarrow \Rset 
+    \text{Find } u:\bar\Omega \rightarrow \Rset
     \text{ such  that}
     \\\noalign{\medskip}
     \begin{aligned}
@@ -321,7 +344,7 @@ For that purpose, we proceed as follows:
   \vspace{-1ex}
   \begin{equation*}
     \begin{cases}
-      \text{Find } u:\bar\Omega \rightarrow \Rset 
+      \text{Find } u:\bar\Omega \rightarrow \Rset
       \text{ such that }
       \\\noalign{\medskip}
       \begin{aligned}
@@ -332,7 +355,7 @@ For that purpose, we proceed as follows:
     \end{cases}
     \hspace{-1em}\leadsto\quad
     \begin{cases}
-      \text{Find $u_h\in X_{h}$ such that} 
+      \text{Find $u_h\in X_{h}$ such that}
       \\\noalign{\medskip}
       \begin{aligned}
         \int_\Omega \nabla u_h \cdot \nabla v_h = \int_\Omega f \cdot
@@ -343,22 +366,10 @@ For that purpose, we proceed as follows:
   \end{equation*}
 
 \item[Step 2.] Translate the variational formulation into \FF
-  language. 
+  language.
   Supposing that the domain, $\Omega$, is given by the unit circle, we
   can write the following script :
-  \lstset{language=freefem++}
-\begin{lstlisting}
-border gamma(t=0, 2*pi) { x=cos(t); y=sin(t); } // Define boundary
-mesh Th = buildmesh(gamma(20)); // Build mesh with 20 intervals on boundary
-fespace Xh(Th,P1); // Define P1 finite element space
-Xh u,v; // Build two functions in this space (unknown and test function)
-func f = exp(x)*sin(y);  // Right hand side
-solve Dirichlet(u,v) =   // Define variational formulation  
-  int2d(Th) ( dx(u)*dx(v) + dy(u)*dy(v) )
-  - int2d(Th) ( f*v )
-  + on( gamma, u=0 );
-plot(u);  // Show results
-\end{lstlisting}
+\lstinputlisting[caption={First example: Poisson problem homogeneous Dirichlet conditions}]{code/poisson-first-example.edp}
 
 \end{description}
 
@@ -371,7 +382,7 @@ This piece of code contains the fundamentals of FEM with \FF.
 \item In line 3 we define the FE (finite element) space,
   $\P1$--Lagrange in this case, and in line 4 we declare two variables
   in this space. We intend to use the first one, \texttt{u}, as the FE
-  unknown (the \texttt{trial} function), and the second one, \texttt{v} 
+  unknown (the \texttt{trial} function), and the second one, \texttt{v}
   as the \texttt{test} function.
 \item In line 5 we define a function. Note that standard variables
   \texttt{x} and \texttt{y} are predefined and must not be declared.
@@ -409,8 +420,8 @@ one of those applications, called
 Paraview\footnote{\url{http://www.paraview.org/}}.
 
 The following code can be appended to the script above for saving the
-solution, $u$, into a VTK file. 
-\lstset{language=freefem++}
+solution, $u$, into a VTK file.
+
 \begin{lstlisting}
 load "iovtk";
 savevtk("/tmp/output.vtk", Th, u, dataname="Temperature");
@@ -427,7 +438,7 @@ the only data set is called ``Temperature''. We can use this name to
 access the data in the future (for instance using Paraview).
 
 
-\section{Addressing more complex problems}
+\section{Other Boundary Conditions}
 \label{sec:complex-problems}
 
 In the section we go beyond the Poisson problem and generalize it in
@@ -437,13 +448,13 @@ different ways.
 \item Handling transient (time dependent) problems (Heat equation).
 \end{enumerate}
 
-\subsection{Poisson problem with mixed boundary conditions}
+\subsection{Poisson Problem With Mixed Neumann/Dirichlet Boundary Conditions}
 \label{sec:poisson-problem-with-mixed-bc}
 
 We set the problem: given
 \begin{itemize}
 \item $\Omega\subset\R^2$, with smooth piecewise boundary, where we
-  distinguish two zones: 
+  distinguish two zones:
   $\partial\Omega=\Gamma_0\cup\Gamma_1$
 \item $\nu>0$, \quad $f:\Omega\to\R$, \quad $g:\Gamma_0\to\R$
 \end{itemize}
@@ -489,17 +500,17 @@ $\nabla u \cdot n=g_1$, where $n$ is the exterior normal vector.
   % writing the variational formulation, we  assume the homogeneous
   % Dirichlet condition
   % $$u=0 \text{ on } \Gamma_1,$$
-  % and imposing later $u=g_0$ on $\Gamma_0$. 
+  % and imposing later $u=g_0$ on $\Gamma_0$.
 \item But Neumann boundary conditions appear in a natural way in the
   variational formulation. Specifically, when the Green formula
   (integration by parts) is applied, one gets the following problem:
   \begin{equation*}
       \begin{cases}
-      \text{Find $u_h\in U_{h}$ such that} 
+      \text{Find $u_h\in U_{h}$ such that}
       \\\noalign{\medskip}
       \begin{aligned}
-        \int_\Omega \nabla u_h \cdot \nabla v_h = \int_\Omega f\, v_h 
-        - \int_{\Gamma_1} g_1\, v_h
+        \int_\Omega \nabla u_h \cdot \nabla v_h = \int_\Omega f\, v_h
+        + \int_{\Gamma_1} g_1\, v_h
         \quad\text{for each } v_h\in U_{h},
       \end{aligned}
     \end{cases}
@@ -512,53 +523,54 @@ $\nabla u \cdot n=g_1$, where $n$ is the exterior normal vector.
   \end{itemize}
 \end{itemize}
 
-\subsubsection{FreeFem++ programming}
+\subsubsection{FreeFem++ Example}
 
-\paragraph{Step 1: Pre-processing}
+Here we show a FreeFem++ program for the Poisson problem presented above
 
-\lstset{language=freefem++}
-\begin{lstlisting}
-  // 1. Pre-proceso
+\lstinputlisting[caption={Poisson problem with mixed Dirichlet/Neumann boundary conditions}]{code/poisson-Dirich-Neumann.edp}
 
-  // 1.1. Mesh
-  border gamma0(t=2*pi, 0) { x=1.5*cos(t); y=sin(t); }
-  border gamma1(t=0, 2*pi) { x=4*cos(t); y=4*sin(t); }
-  mesh Th = buildmesh(gamma1(40)+gamma0(30));
-  plot(Th, wait=1);
+\subsection{Poisson Problem With Robin Boundary Conditions}
 
-  // 1.2. FE space and functions 
-  fespace Vh(Th,P1);
-  Vh u,v;
+Let us consider the differential problem, which generalizes~(\ref{eq:poisson-mixto}):
+\begin{equation}
+  \label{eq:poisson-robin}
+  \begin{cases}
+    \begin{aligned}
+      -\nu\Delta u &= f \quad \text{ in } \Omega, \\
+      u &= g_0 \quad \text{ on } \Gamma_0, \\
+      au + b \frac{\partial u}{\partial n} &= g_1 \quad \text{ on } \Gamma_1,
+    \end{aligned}
+  \end{cases}
+\end{equation}
+where $a,b\in\Rset$. For $a,b\neq 0$, the third equation
+in~(\ref{eq:poisson-robin}) is termed a \textit{Robin boundary
+  condition}.
 
-  // 1.3. Definition of data
-  real nu=0.3;
-  func f=8*(x^2+y^2);
-  func g=400;
-\end{lstlisting}
+Integration by parts one can obtain the following variational formulation:
+\begin{equation*}
+  \begin{cases}
+    \text{Find $u_h\in U_{h}$ such that}
+    \\\noalign{\medskip}
+    \begin{aligned}
+      \int_\Omega \nabla u_h \cdot \nabla v_h
+      + \frac a b \int_{\Gamma_1} u v
+      = \int_\Omega f\, v_h
+      + \frac 1b \int_{\Gamma_1} g_1\, v_h
+      \quad\text{for each } v_h\in U_{h},
+    \end{aligned}
+  \end{cases}
+\end{equation*}
+being $U_h$ defined as above.
 
-\paragraph{Step 2: Processing}
+A finite element approximattion of the solution can be obtained by the following FreeFem++ script:
 
-\lstset{language=freefem++}
-\begin{lstlisting}[firstnumber=19]
-  solve example1(u,v)=
-  // Bilinear form:
-  int2d(Th)( nu*( dx(u)*dx(v) + dy(u)*dy(v) ))
-  // Linear lorm:
-  - int2d(Th)( f*v ) 
-  - int1d(Th, gamma1)( nu*g*v )
-  // Dirichlet boundary condition
-  + on(gamma0, u=g);
-\end{lstlisting}
+\lstinputlisting[caption={Poisson problem with mixed Dirichlet/Robin boundary conditions}]{code/poisson-Dirich-Robin.edp}
 
-\paragraph{Step 3: Post-processing}
 
-\lstset{language=freefem++}
-\begin{lstlisting}
-  // 3. Post-proceso
-  plot(u, value=1, fill=1, wait=1);
-\end{lstlisting}
+\section{Solving Evolution Equations}
+\label{sec:solv-evol-equat}
 
-\subsection{The heat equation}
+\subsubsection{The Heat Equation}
 \label{sec:heat-equation}
 
 
@@ -580,7 +592,7 @@ The Euler method reads:
 \begin{itemize}
 \item Initialization: for $k=0$, take $u^0=u(t=0)=u_0$
 \item Step $k$: given $u(t_k)$, find $u^{k+1}\in U_h$ (defined in
-  section~\ref{sec:poisson-problem-with-mixed-bc}) such that 
+  section~\ref{sec:poisson-problem-with-mixed-bc}) such that
 % Find \quad $u:\bar\Omega\times(0,T) \rightarrow \R$, representing
 % temperature evolution in $\Omega$, such that:
 \begin{equation*}
@@ -600,11 +612,11 @@ where
 %   \begin{cases}
 %     \frac{\partial u}{\partial t} -\nu\Delta u = f \text{ in } \Omega\times(0,T), \\
 %     u = g_0 \text{ on } \Gamma_0\times(0,T), \\
-%     u = g_1 \text{ on } \Gamma_1\times(0,T), \\    
+%     u = g_1 \text{ on } \Gamma_1\times(0,T), \\
 %   \end{cases}
 % \end{equation}
 
-  
+
  \end{itemize}
 % ecuación anterior, obtendremos el siguiente sistema en tiempo: En la
 % etapa inicial ($k=0$), tomamos $u^0=u(t=0)=u_0$. Conocidos los valores
@@ -614,7 +626,7 @@ where
 % \begin{equation*}
 %   \left\{
 %     \begin{aligned}
-%       &\int_\Omega\frac{u^{k+1}-u^k}{dt} v + \nu\int_\Omega \nabla u \cdot \nabla v 
+%       &\int_\Omega\frac{u^{k+1}-u^k}{dt} v + \nu\int_\Omega \nabla u \cdot \nabla v
 %         = \int_\Omega f \cdot v
 %       \\
 %       &\text{para todo $v\in H_0^1(\Omega)$.}
@@ -625,7 +637,7 @@ where
 % adaptarlo al marco de Lax-Milgram y, así, demostrar que existe una
 % única solución débil. A continuación, si pasamos al segundo miembro
 % los datos conocidos, podemos identificar las formas bilineal y lineal
-% siguientes: 
+% siguientes:
 % \begin{equation*}
 %     \begin{aligned}
 %       a(u,v)&=\int_\Omega\frac{u^{k+1}}{dt} v + \nu\int_\Omega \nabla
@@ -642,78 +654,7 @@ where
 
 \subsubsection{\FF program}
 
-\lstset{language=freefem++}
-\begin{lstlisting}
-load "iovtk"; // We will output vtk 
-
-// 1. Pre-processing
-
-// 1.1. Mesh
-real R=1;
-border gamma0(t=0, pi/4)    { x=R*cos(t); y=R*sin(t); }
-border gamma1(t=pi/4, 2*pi) { x=R*cos(t); y=R*sin(t); }
-
-int n=30;
-mesh Th = buildmesh(gamma0(n)+gamma1(9*n));
-plot(Th, wait=1);
-
-// 1.2. FE space and functions
-fespace Vh(Th,P1);
-Vh u, v;
-Vh uold;
-
-macro gradient(u) [dx(u), dy(u)] // End Of Macro
-
-// 1.3. Data definition
-real nu=1;
-real t=0, T=1;  // Time interval [0,T]
-int  N=100; // Number of time iterations
-real dt=T/N;  // Time step
-
-func f=0; //8*(x^2+y^2);
-// func real g1(real x, real y, real t) {
-//   return 40*t;
-// }
-func real g0(real x, real y, real t) {
-  return 100*(1-1./(t+1));
-}
-func real g1(real x, real y, real t) {
-  return 0;
-}
-
-func u0=0; // Init
-
-uold = u0;
-
-// 2. Processing
-
-// Declare (but not solve) the heat equation variational problem
-problem heatEquation(u,v)=
-  // Bilineal form:
-  int2d(Th)(
-    u*v/dt +
-    nu*gradient(u)'*gradient(v) // ' means transpose
-  )
-  // Linear form
-  - int2d(Th)( uold*v/dt + f*v ) 
-  - int1d(Th, gamma1) ( g1(x,y,t)*v ) // Neumann boundary condtion
-
-  // Dirichlet boundary condtion
-  + on(gamma0, u=g0(x,y,t));
-
-// Time iteration loop
-for (int k=0; k<N; ++k ) {
-
-  t = t + dt;    // Increase current time
-  heatEquation;  // Solve the PDE variational problem
-  uold = u;      // Save solution for next time step
-  
-  // 3. Post-processing (save to VTK for further displaying with Paraview)
-  string filename="/tmp/heat_equation-" + k + ".vtk";
-  savevtk(filename, Th, u, dataname="Temperature");
-}
-\end{lstlisting}
-% -------------------
+\lstinputlisting{code/heat-EI.edp}
 
 \subsection{The Stokes equations}
 \label{sec:stokes}
@@ -724,8 +665,8 @@ fluid as atmosphere, ocean, flux around vehicles, etc.
 \begin{equation*}
   \left\{
   \begin{aligned}
-    -\nu\Delta \mathbf{u}+ \nabla p &= f 
-    \\ 
+    -\nu\Delta \mathbf{u}+ \nabla p &= f
+    \\
     \nabla\cdot \mathbf{u} & = 0
     \\ & + \text{boundary conditions},
   \end{aligned}
@@ -747,7 +688,7 @@ rectangular domain but, in this case, with the purpose of illustrate
 the construction in \FF of complex parametric geometries, we have
 introduced some holes in the rectangular domain. They are defined by
 parametric figures which are known as
-conchoids\footnote{\url{http://en.wikipedia.org/wiki/Conchoid_\%28mathematics\%29}}.  
+conchoids\footnote{\url{http://en.wikipedia.org/wiki/Conchoid_\%28mathematics\%29}}.
 
 Homogeneous Dirichlet b.c., $(u,v)=(0,0)$, are imposed for
 $\mathbf{u}$ on the whole boundary excepting the top line, where we
@@ -767,10 +708,10 @@ and degree $1$ for pressure).
 //`------------------------------------------------
 
 // Macro for the 2D boundary defining a hole. They are parametric
-// curves called "conchoids". In the macro: 
+// curves called "conchoids". In the macro:
 // n = number of 'petals', P = center of the hole
 int NMAX=20;
-macro conchoid(name, n, P, thelabel) 
+macro conchoid(name, n, P, thelabel)
  name(i=0,NMAX) {
     real a=1.0, b=2.0;
     real theta = i*2*pi/NMAX;
@@ -796,7 +737,7 @@ border ly1(k=-ycoor,ycoor) { x=-xcoor; y=k; label=2; }
 border ly2(k=-ycoor,ycoor) { x=+xcoor; y=k; label=2; }
 
 int nx=40, ny=20, nc=50;
-mesh Th = buildmesh( ly1(-ny)+lx1(nx)+ly2(ny)+lx2(-nx) 
+mesh Th = buildmesh( ly1(-ny)+lx1(nx)+ly2(ny)+lx2(-nx)
     + c3(-nc) + c4(-nc) + c5(-nc) );
 
 //,--------------------------------------------------------
@@ -809,19 +750,19 @@ fespace Ph(Th,P1); Ph p,pp;       // Pressure functions
 real upperVelocity=1;
 
 macro grad(u) [dx(u), dy(u)] // end of macro
-  
+
 // Definition of Stokes problem
 
 problem stokes2d( [u,v,p], [uu,vv,pp], solver=LU) =
     int2d(Th)(
-	grad(u)'*grad(uu) + grad(v)'*grad(vv) 
+	grad(u)'*grad(uu) + grad(v)'*grad(vv)
 	+ grad(p)'*[uu,vv] + pp*(dx(u)+dy(v)) //'
 	- 1e-10*p*pp )
   + on(0,1,2,u=0,v=0) + on(3,u=upperVelocity,v=0);
 
 stokes2d;  // Resolution of Stokes problem
 
-// Save to VTK (for high quality plotting)  
+// Save to VTK (for high quality plotting)
 load "iovtk";
 savevtk("/tmp/stokes.vtk", Th, [u,v,0], p);
 \end{lstlisting}
@@ -893,8 +834,8 @@ For further details:
 \end{enumerate}
 \end{document}
 
-%%% Local Variables: 
+%%% Local Variables:
 %%% mode: latex
 %%% TeX-master: t
 %%% ispell-local-dictionary: "english"
-%%% End: 
+%%% End:

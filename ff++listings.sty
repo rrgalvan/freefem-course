@@ -79,28 +79,44 @@
   }
 }[keywords, comments, strings, directives]
 
-\lstset{ frame=Ltb,
-     framerule=0pt,
+
+\lstset{ frame=lbr,
+     framerule=1.2pt,
      aboveskip=0.5cm,
      framextopmargin=3pt,
      framexbottommargin=3pt,
-     % framexleftmargin=1cm,
+     % framexleftmargin=2pt,
      framesep=0pt,
-     rulesep=.4pt,
      backgroundcolor=\color{gray!10},
      rulesepcolor=\color{black},
+     xleftmargin=1.2cm,
      %
      stringstyle=\ttfamily,
-     showstringspaces = false,
+     showstringspaces=false,
      basicstyle=\small\ttfamily,
+     % basicstyle=\footnotesize\ttfamily,
      stringstyle=\color{green!65!purple},
      commentstyle=\color{blue!80},
-     identifierstyle=\bfseries,
-     keywordstyle=\bfseries\color{orange!80!black},
+     % identifierstyle=\bfseries,%
+     keywordstyle=\color{orange!80!black},
      %
      numbers=left,
-     numbersep=15pt,
-     numberstyle=\tiny,
+     numbersep=7pt,
+     numberstyle=\tiny\color{gray!70},
      numberfirstline = false,
      breaklines=trufe,
+     postbreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\color{red}\hookrightarrow\space}},
+     %
+     language=freefem++
    }
+%  \usepackage{courier}
+
+\usepackage{caption}
+
+\DeclareCaptionFont{white}{\color{white}}
+
+\DeclareCaptionFormat{listing}{\colorbox[cmyk]{0.43, 0.35,
+    0.35,0.01}{\parbox{0.99\textwidth}{\hspace{15pt}#1#2#3}}}
+
+\captionsetup[lstlisting]{format=listing,labelfont=white,textfont=white,
+  singlelinecheck=false, margin=0pt, font={bf,sf,footnotesize}}
