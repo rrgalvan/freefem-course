@@ -441,7 +441,7 @@ access the data in the future (for instance using Paraview).
 \section{Other Boundary Conditions}
 \label{sec:complex-problems}
 
-In the section we go beyond the Poisson problem and generalize it in
+In this section we go beyond the Poisson problem and generalize it in
 different ways.
 \begin{enumerate}
 \item Introducing other kind of boundary conditions (Neumann b.c.)
@@ -527,7 +527,10 @@ $\nabla u \cdot n=g_1$, where $n$ is the exterior normal vector.
 
 Here we show a FreeFem++ program for the Poisson problem presented above
 
-\lstinputlisting[caption={Poisson problem with mixed Dirichlet/Neumann boundary conditions}]{code/poisson-Dirich-Neumann.edp}
+\lstinputlisting[
+caption={Poisson problem with mixed Dirichlet/Neumann boundary conditions},
+label={dirich-neumann}
+]{code/poisson-Dirich-Neumann.edp}
 
 \subsection{Poisson Problem With Robin Boundary Conditions}
 
@@ -562,9 +565,20 @@ Integration by parts one can obtain the following variational formulation:
 \end{equation*}
 being $U_h$ defined as above.
 
-A finite element approximattion of the solution can be obtained by the following FreeFem++ script:
+\begin{exercise}
+  Develop a FreeFem++ script for the finite element approximation of
+  the solution of the problem presented above. For instance, use
+  $a=1, b=1$ and the same domain and data as in
+  \lstlistingname~\ref{dirich-neumann}.
+\end{exercise}
 
-\lstinputlisting[caption={Poisson problem with mixed Dirichlet/Robin boundary conditions}]{code/poisson-Dirich-Robin.edp}
+\section{Delving into the FreeFem++ language}
+\label{sec:delv-into-freef}
+
+Fundamental data types are similar to C++. But some fundamental types of C++ are not present in FreeFem++ (and vice versa) for instance:
+\lstinputlisting[
+caption={FreeFem++ fundamental data types and operations},
+]{code/variables.edp}
 
 
 \section{Solving Evolution Equations}
@@ -586,9 +600,7 @@ first transient problem, where the time variable is present. given
 
 For time discretization, consider $n+1$ time instants in $[0,T]$, $t_k=
 \verb|dt|\cdot k$, $k=0, ..., n$, being $\verb|dt|=T/n$ the time
-step.
-
-The Euler method reads:
+step. The \textit{Implicit Euler} method reads:
 \begin{itemize}
 \item Initialization: for $k=0$, take $u^0=u(t=0)=u_0$
 \item Step $k$: given $u(t_k)$, find $u^{k+1}\in U_h$ (defined in
@@ -654,7 +666,11 @@ where
 
 \subsubsection{\FF program}
 
-\lstinputlisting{code/heat-EI.edp}
+\lstinputlisting[
+caption={Stokes Equations},
+label={lst:heat-ei}
+]
+{code/heat-EI.edp}
 
 \subsection{The Stokes equations}
 \label{sec:stokes}
