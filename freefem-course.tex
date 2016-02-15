@@ -509,8 +509,8 @@ $\nabla u \cdot n=g_1$, where $n$ is the exterior normal vector.
       \text{Find $u_h\in U_{h}$ such that}
       \\\noalign{\medskip}
       \begin{aligned}
-        \int_\Omega \nabla u_h \cdot \nabla v_h = \int_\Omega f\, v_h
-        + \int_{\Gamma_1} g_1\, v_h
+        \nu\int_\Omega \nabla u_h \cdot \nabla v_h = \int_\Omega f\, v_h
+        + \nu\int_{\Gamma_1} g_1\, v_h
         \quad\text{for each } v_h\in U_{h},
       \end{aligned}
     \end{cases}
@@ -557,10 +557,10 @@ Integration by parts one can obtain the following variational formulation:
     \text{Find $u_h\in U_{h}$ such that}
     \\\noalign{\medskip}
     \begin{aligned}
-      \int_\Omega \nabla u_h \cdot \nabla v_h
-      + \frac a b \int_{\Gamma_1} u v
+      \nu\int_\Omega \nabla u_h \cdot \nabla v_h
+      + \nu\frac a b \int_{\Gamma_1} u v
       = \int_\Omega f\, v_h
-      + \frac 1b \int_{\Gamma_1} g_1\, v_h
+      + \nu \frac 1b \int_{\Gamma_1} g_1\, v_h
       \quad\text{for each } v_h\in U_{h},
     \end{aligned}
   \end{cases}
@@ -581,9 +581,9 @@ being $U_h$ defined as above.
 \label{sec:data-types-arrays}
 
 Fundamental data types are similar to C++. But some fundamental types of C++ are not present in FreeFem++ (and vice versa) for instance:
-\lstinputlisting[
-caption={FreeFem++ fundamental data types and operations},
-]{code/variables.edp}
+% \lstinputlisting[
+% caption={FreeFem++ fundamental data types and operations},
+% ]{code/variables.edp}
 
 \subsection{Linear System Associated to Variational Formulation}
 \label{part:line-syst-assoc}
