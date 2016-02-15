@@ -52,19 +52,19 @@ cout << "min: " << v.min << ", sum: " << v.sum << endl;
 
 // Arrays with two indexes
 
-int N=3,M=4;
-real[int,int] A(N,M);
-real[int] b1(N),b2(M);
-b1=[1,2,3];
-b2=[4,5,6,7];
-A=1;
-A(:,1)=2;
+int N=3;
+real[int,int] A(N,N); // Squared NxN matrix
+real[int] b1(N), b2(N);
+b1=[4,5,6];
+b2=[1,2,3];
+A=1; // Fill A with ones
+A(:,1)=2; // Fill first column
 cout << A << endl;
-// cout << A*b1 << endl;
-cout << b2'*A << endl;
-cout << b1'*b2 << endl;
+cout << b1'*A << endl; // b^T times A
+cout << b1'*b2 << endl; // Scalar product
 
 // Sparse matrices
 
-matrix MM=A;
-cout << MM << endl;
+matrix M = A; // Now M is a sparse matrix
+cout << "Storage: for each nozero value, row column value(row, column)" << endl;
+cout << M << endl;

@@ -15,8 +15,9 @@ real nu=0.3;
 func f=8*(x^2+y^2);
 func g=400;
 
-// 2.- Processing
-solve example1(u,v) =
+// 2.- Defining the problem and solving it
+
+problem PoissonDirNeu(u,v) =
   // Bilinear form:
   int2d(Th)( nu*( dx(u)*dx(v) + dy(u)*dy(v) ))
   // Linear form:
@@ -24,6 +25,8 @@ solve example1(u,v) =
   - int1d(Th, gamma1)( nu*g*v )
   // Dirichlet boundary condition
   + on(gamma0, u=g);
+
+PoissonDirNeu; // Mount linear system and solve the problem
 
 // 3. Post-processing
 plot(u, value=1, fill=1, wait=1);

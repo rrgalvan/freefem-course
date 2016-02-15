@@ -20,7 +20,7 @@ func g=400;
 //,---------------
 //| 2.- Processing
 //`---------------
-solve example1(u,v) =
+problem example1(u,v) =
   // Bilinear form:
   int2d(Th)( nu*( dx(u)*dx(v) + dy(u)*dy(v) ))
   // Linear form:
@@ -28,6 +28,8 @@ solve example1(u,v) =
   - int1d(Th, gamma1)( nu*g*v )
   // Dirichlet boundary condition
   + on(gamma0, u=g);
+
+example1; // Mount linear system and solve the problem
 
 //,-------------------
 //| 3. Post-processing

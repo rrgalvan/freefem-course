@@ -369,7 +369,7 @@ For that purpose, we proceed as follows:
   language.
   Supposing that the domain, $\Omega$, is given by the unit circle, we
   can write the following script :
-\lstinputlisting[caption={First example: Poisson problem homogeneous Dirichlet conditions}]{code/poisson-first-example.edp}
+\lstinputlisting[caption={First example: Poisson problem homogeneous Dirichlet conditions},label={first-example}]{code/poisson-first-example.edp}
 
 \end{description}
 
@@ -526,6 +526,8 @@ $\nabla u \cdot n=g_1$, where $n$ is the exterior normal vector.
 \subsubsection{FreeFem++ Example}
 
 Here we show a FreeFem++ program for the Poisson problem presented above
+Note that here we use the keyword \texttt{problem} for
+defining the variational problem, which is solved later (instead of \texttt{solve}, which was used in Example~\ref{first-example} for defining and solving the problem).
 
 \lstinputlisting[
 caption={Poisson problem with mixed Dirichlet/Neumann boundary conditions},
@@ -575,11 +577,37 @@ being $U_h$ defined as above.
 \section{Delving into the FreeFem++ language}
 \label{sec:delv-into-freef}
 
+\subsection{Data Types, Arrays and Matrices}
+\label{sec:data-types-arrays}
+
 Fundamental data types are similar to C++. But some fundamental types of C++ are not present in FreeFem++ (and vice versa) for instance:
 \lstinputlisting[
 caption={FreeFem++ fundamental data types and operations},
 ]{code/variables.edp}
 
+\subsection{Linear System Associated to Variational Formulation}
+\label{part:line-syst-assoc}
+
+In \FF, one can use the keyword \texttt{varf} to store the matrix and
+vector related to a variational formulation. Then the operator \verb|^-1*|
+can be used to solve the associated linear system.
+
+The advantage of using this procedure is that it is faster that
+\texttt{solve} or \texttt{problem} (about 4 times faster, according to
+\FF documentation).
+
+The following script uses \texttt{varf} for solving Example~\ref{dirich-neumann}.
+
+\begin{exercise}
+  Develop a FreeFem++ script for the finite element approximation of
+  the solution of the problem presented above. For instance, use
+  $a=1, b=1$ and the same domain and data as in
+  \lstlistingname~\ref{dirich-neumann}.
+\end{exercise}
+
+\lstinputlisting[
+caption={Linear System Associated to Variational Formulation},
+]{code/poisson-varf.edp}
 
 \section{Solving Evolution Equations}
 \label{sec:solv-evol-equat}
