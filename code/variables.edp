@@ -1,0 +1,70 @@
+// 1) Integers
+
+int i;
+i = 10;
+int j =-10;
+// unsigned k=20; // Error the identifier usigned does not exist
+cout << i << ", " << j << endl;
+
+// Some arithmetics
+cout << " i+j:" << i+j << endl;
+cout << "max(i,j): " << max(i,j) << endl;
+cout << "square(i): " << i^2 << " or " << square(i) << endl;
+cout << "sqrt(abs(j)): " << sqrt(abs(j)) << endl;
+
+// 2) Floatting point numbers
+
+real x, y; // Double precisson numbers (termed double in C++)
+x = 0.001;
+y = pi; // Pi is a pre-defined keyword
+
+// 3) Also complex
+complex c = 1-2i;
+cout << "c=" << c << "... " << 2*c-2 << endl;
+
+// 4) Characters and strings
+// char s = 'a' // // Error the identifier char does not exist
+string s = "a";
+string t = "Esto es una cadena de caracteres";
+cout << s << ", " << t << endl;
+cout << "Uni\'on " << ", " << s+t << endl;
+cout << "Subconjunto: " << t(0:3) << endl;
+
+// 5) Arrays
+cout << endl << endl;
+
+real [int] v(10);  // array of 10 real
+v = 1.03; // set all the array to 1.03
+v[1]=2.15;
+cout << v[0] << " " << v[9] << " size of v = "
+  << v.n << " min: " << v.min << " max:" << v.max
+  << " sum : " << v.sum << endl;
+// change the size of array
+v.resize(12);
+v(10:11)=3.14;
+v(5:9)=sqrt(2);
+cout << " resized v: " << v << endl;
+real[int] w1(12), w2(12);
+w1 = 2*v;
+w2 = w1+v;
+cout << "w2:" << w1 << endl;
+cout << "min: " << v.min << ", sum: " << v.sum << endl;
+
+// Arrays with two indexes
+
+int N=3;
+real[int,int] A(N,N); // Squared NxN matrix
+real[int] b1(N), b2(N);
+b1=[4,5,6];
+b2=[1,2,3];
+A=1; // Fill A with ones
+A(:,1)=2; // Fill first column
+cout << A << endl;
+cout << b1'*A << endl; // b^T times A
+cout << b1'*b2 << endl; // Scalar product
+
+// Sparse matrices
+
+matrix M = A; // Now M is a sparse matrix
+cout << "Storage: for each nozero value, row column value(row, column)" << endl;
+cout << M << endl;

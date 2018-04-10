@@ -1,0 +1,56 @@
+
+func uex = 0.5*x*(x-1)*y*(y-1); // Exact solution
+func dxUex = (x-0.5) * y*(y-1); // x-deriv of uex
+func dyUex = (y-0.5) * x*(x-1); // y-deriv of uex
+func f = -x*(x-1)-y*(y-1); // f = - Laplacian(uex)
+macro grad(u) [dx(u),dy(u)] // EOM
+macro errL2(u) sqrt(int2d(Th)(square(u-uex))) // EOM
+  macro errH01(u) sqrt(int2d(Th)( square(dx(u)-dxUex) + square(dy(u)-dyUex) ) ) // EOM
+  ;
+
+int n, ntests = 8; // Number of tests
+real[int] L2errors(ntests);
+real[int] H1errors(ntests);
+real[int] h(ntests);
+
+for(int i=0; i<ntests; i++) {
+  n=2^(i+1);
+  h[i]=1.0/n; // Mesh size (approx.)
+  cout << "# i=" << i << ", n=" << n << ", h=" << h[i] << endl;
+  cout << "# =======================================#" << endl;
+
+  // Solve Poisson problem in the unit square (n x n mesh)
+  mesh Th=square(n,n);
+  int[int] boundary=[1,2,3,4];
+  fespace Vh(Th,P1);
+  Vh u, v;
+
+  solve Poisson(u,v)=
+    int2d(Th)(grad(u)'*grad(v))
+    - int2d(Th)(f*v)
+    + on(boundary, u=0);
+
+  plot(u, fill=1, value=1);
+
+  // Compute errors
+  L2errors[i] = errL2(u);
+  H1errors[i] = errH01(u);
+  cout << "## ||error||_{L^2)    =" << L2errors[i] << endl;
+  cout << "## ||error||_{H_0^1)  =" << H1errors[i] << endl;
+ }
+
+// Compute and save error orders
+ofstream ofL2("errors.txt"); // File to save errors
+
+cout << "## Error orders:" << endl;
+for(int i=1; i<ntests; i++) {
+  cout << "i=" << i << ", h=" << h[i] << endl;
+
+  if(i>0) {
+    real orderL2 = log(L2errors[i]/L2errors[i-1])/log(h[i]/h[i-1]);
+    real orderH1 = log(H1errors[i]/H1errors[i-1])/log(h[i]/h[i-1]);
+    cout << "Error order (L2): " << orderL2 << endl;
+    cout << "Error order (H1): " << orderH1 << endl;
+    ofL2 << h[i] << " " << L2errors[i-1] << " " << H1errors[i-1] << endl;
+  }
+ }
