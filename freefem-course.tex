@@ -1,7 +1,7 @@
 % Created 2011-07-10 dom 13:39
 \documentclass[12pt]{article}
-\usepackage[latin1]{inputenc}
-%\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
 \usepackage{fixltx2e}
 \usepackage{graphicx}
 \usepackage{longtable}
@@ -32,7 +32,10 @@
 \usepackage{math,ff++listings}
 \usepackage{pgf}
 
-\providecommand{\alert}[1]{\emph{#1}}
+\usepackage[noblocks]{authblk} % Authors
+\setlength{\affilsep}{3em}
+
+\providecommand{\alert}[1]{\textbf{#1}}
 \providecommand{\structure}[1]{#1}
 
 \newcommand{\FF}{\textit{FreeFem++}\xspace}
@@ -46,19 +49,23 @@
   \subsubsection*{Exercise~\theexercise.}}
 {}
 
-\title{Introduction to Finite Elements with \FF}
-\author{J. Rafael Rodríguez Galván \\\noalign{\smallskip} Universidad de Cádiz}
+\title{Computer Practices: The Finite Element Method with \FF}
+
+\author[$\dagger$]{Juan Vicente GutiÃ©rrez Santacreu}
+\author[$\ddagger$]{J. Rafael RodrÃ­guez GalvÃ¡n}
+\affil[$\dagger$]{Departamento de MatemÃ¡tica Aplicada I. Universidad de Sevilla. \texttt{juanvi@us.es}}
+\affil[$\ddagger$]{Departamento de MatemÃ¡ticas. Universidad de CÃ¡diz. \texttt{rafael.rodriguez@uca.es}}
+
 \date{
-  % \includegraphics[width=0.13\textwidth]{./logo-unica.png}\par
-  ~
-  \\[5em]
-  \textsf{\textit{Máster interuniversitario en Matemáticas. Universidad de Cádiz.}}
-  \\[0.5em]
-  \emph{February, 2017}
-  \\[9em]
-  \includegraphics[width=0.12\textwidth]{./cc-by-sa.png}
+  \textsf{\textit{Doc-Course: ``Partial Differential Equations:
+      Analysis, Numerics and Control''. Research Unit 3: Numerical
+      Methods for PDEs}}
+  \\[2em]
+  \emph{April, 2018}
+  \\[10em]
+  \includegraphics[width=0.07\textwidth]{./cc-by-sa.png}
   \\[1em]
-  \begin{small} \em
+  \begin{small} \scriptsize\em
     \href{http://creativecommons.org/licenses/by-sa/3.0/}{Creative
       Commons Attribution-Share\_Alike License, \\
       \scriptsize\url{http://creativecommons.org/licenses/by-sa/3.0/}}.
@@ -108,7 +115,7 @@
 \subsection{The \FF environment}
 \label{sec:ff-environment}
 
-\alert{\FF},\footnote{\url{http://www.freefem.org/ff++}} is a package
+\alert{\FF}\footnote{\url{http://www.freefem.org/ff++}} is a package
 for \emph{numerical approximation of the solution of PDE} (partial
 differential equations), both 2D and 3D, by means of the \textit{Finite
 Element Method} (FEM). \FF is composed of:
@@ -117,9 +124,8 @@ Element Method} (FEM). \FF is composed of:
 
 \item An interpreted \alert{programming Language}:
   \begin{itemize}
-  \item Oriented to fast specification of those problems which can be
-    described by means of (linear and steady) PDE, and  also  to resolution
-    of those problems, using FEM.
+  \item Oriented to (1) fast specification of (linear and steady) PDE
+    problems and (2) resolution of those problems, using the FEM.
   \item Allows easy implementation of complex problems (nonlinear,
     transient,...)
   \end{itemize}
@@ -156,11 +162,12 @@ Some examples related to 2D steady Stokes equations:
 where the unknowns are $\mathbf{u}=(u,v):\Omega\to\R^2$ (velocity field of fluid)
 and $p:\Omega\to\R$ pressure in each point of the domain.
 \begin{itemize}
-\item \href{videos/mediterraneo2.avi}{{}The Stokes/Navier-Stokes
-    equations in Mediterranean sea (video).}
+\item
+  \href{https://www.youtube.com/watch?v=dn4UeMQDf9c&index=2&list=UUbv6VZ2UBw4iXCMR2L4G0zg&t=0s}{Video:
+    Stokes/Navier-Stokes equations in Mediterranean sea.}
 \item Why I like numerical simulation (as mathematician): it helps you
-  to understand theory
-  (\href{videos/eps-to-zero-P2-P1-streamlines-20s.avi}{in this video,
+  to understand underlying maths
+  (\href{https://www.youtube.com/watch?v=6x8KseewSrU&feature=youtu.be}{Video:
     instability of a numerical scheme}).
 \end{itemize}
 
@@ -170,14 +177,14 @@ and $p:\Omega\to\R$ pressure in each point of the domain.
 
 \item Inspired by \alert{C/C++}.
   \begin{itemize}
-  \item \alert{Similarities}: Syntax, strong typing\ldots{}
-  \item \alert{Does not include}: Pointers, object orienting, \ldots{}
+  \item \emph{Similarities}: Syntax, strong typing\ldots{}
+  \item \emph{Does not include}: Pointers, object orienting, \ldots{}
   \end{itemize}
 
 \item \alert{Oriented} to numerical simulation using the finite element method.
-  Possibilities:
+  \alert{Capabilities}:
   \begin{itemize}
-  \item Definition of the geometry of a problem and 2D/3D meshing.
+  \item Definition of the \textbf{geometry} of a problem and 2D/3D meshing.
     Although \FF is not a CAD/CAE environment and then, for complex
     geometries, it is necessary to use external tools.
   \item Variety of available \alert{finite elements}:
@@ -185,25 +192,24 @@ and $p:\Omega\to\R$ pressure in each point of the domain.
     Raviart-Thomas\ldots{}
   \item Flexibility for definition of problems which can be formulated
     in terms of PDE (and expressed by a \alert{variational formulation})
-  \item Automation of the task of assembling FEM matrices involved in
-    underlying linear systems, so that this task is transparent to the
-    user.
+  \item Automation of the task of \textbf{assembling FEM matrices} (involved in
+    underlying FEM linear systems) so that this task is \textit{transparent to the
+    user}.
   \item Several algorithms for \alert{resolution of those linear
       systems}: LU, Cholesky, Crout, CG, GMRES, UMFPACK\ldots{}
-  \item Facilities for \alert{post-processing and 2D/3D
-      visualización}.  Although \FF no is not specialized in
-    scientific visualización, it can be complemented with external
+  \item Facilities for \alert{post-processing} and \alert{2D/3D
+      visualization}.  Although \FF no is not specialized in
+    scientific visualization, it can be complemented with external
     tools for high-quality graphics.
-  \item Many other issues:
+  \item Other issues:
     \begin{itemize}
     \item Excellent documentation (with a plenty of examples and
       tutorials):
       \url{http://www.freefem.org/ff++/ftp/freefem++doc.pdf}.
-    \item \textit{Matlab}--like matrix manipulation (or
-      Matlab/Octave/Python/Fortran--like).
+    \item (Matlab/Octave/Python/Fortran)--like matrix manipulation.
     \item Automatic interpolation between meshes, adaptive refinement,...
     \item Parallel (with MPI) version available
-      (\texttt{FreeFem++-mpi}) in UNIX systems.
+      (\texttt{FreeFem++-mpi}).
     \end{itemize}
   \end{itemize}
 
@@ -212,26 +218,47 @@ and $p:\Omega\to\R$ pressure in each point of the domain.
 \section{Installation and first steps}
 \label{sec:inst-first-steps}
 
-The \FF package includes an interpreter for execution of code (code
-which is written in \FF language) and also some additional tools. But
-the standard edition does not include an integrated environment (with
-editor, error feedback, syntax highlighting, etc.). User is
-allowed to choose his/her preferred editor between different
-possibilities, as we comment below.
+The \FF package includes an interpreter for execution of code but no
+editor or integrated environment (with editor, error feedback, syntax
+highlighting, etc.) is included. User is allowed to choose his/her
+preferred editor between different possibilities, for instance (see
+\FF manual for details):
 
-In each operative system, there are different possibilities for the
-selection of an adequate editor, for instance:
 \begin{itemize}
-\item \textit{Crimson Editor} or \textit{Notepad++} in Windows,
-\item \texttt{Emacs} in GNU/Linux, MacOS or Windows.
-\item ...
+\item \textit{Crimson Editor} or \textit{Notepad++} on Windows,
+\item \textit{Fraise editor} on MacOS.
+\item \texttt{Emacs} on GNU/Linux, MacOS or Windows. Note that Emacs
+  is a free/libre general-purpose (not only specialized in \FF)
+  and powerful text editor.
+\item \texttt{\FFcs} on GNU/Linux, MacOS or Windows. Note that \FFcs
+  is integrated environment specialized in editing and post-processing
+  \FF scripts.
 \end{itemize}
-See \FF manual for details.
 
-Anyway, for a first approach to \FF, we recommend \FFcs,
-\url{http://www.ann.jussieu.fr/~lehyaric/ffcs/}. \FFcs is an
-integrated environment providing \FF, and adequate editor and other
-characteristics. Of course, advanced users may prefer other options.
+
+
+% Anyway, for a first approach to \FF, we recommend \FFcs,
+% \url{http://www.ann.jussieu.fr/~lehyaric/ffcs/}. \FFcs is an
+% integrated environment providing \FF, and adequate editor and other
+% characteristics. Of course, advanced users may prefer other options.
+
+Here we review the configuration of the last two ones.
+
+\subsection{Using \FF under Emacs}
+
+Emacs can be installed form its
+\href{https://www.gnu.org/software/emacs}{web page} of from the
+software center of your operative system.
+
+For a \textbf{easy configuration} from scratch, it suffices to
+download and unzip \textit{in your home user directory} the file
+\texttt{freefem-emacs-basic-config.zip} which can be found in
+\url{https://github.com/rrgalvan/freefem-mode/releases}.
+
+For advanced configuration of \FF mode on Emacs, follow the
+instructions from \url{https://github.com/rrgalvan/freefem-mode}.
+
+
 
 \subsection{\FFcs: an integrated environment for \FF}
 \label{sec:freefem-CS}
@@ -686,10 +713,10 @@ where
 % \end{equation}
 
 
-% ecuación anterior, obtendremos el siguiente sistema en tiempo: En la
+% ecuaciÃƒÂ³n anterior, obtendremos el siguiente sistema en tiempo: En la
 % etapa inicial ($k=0$), tomamos $u^0=u(t=0)=u_0$. Conocidos los valores
 % $u^0,...,u^k$, que aproximan a los valores de $u(t_0),...,u(t_k)$, en
-% la etapa $k+1$, calculamos $u^{k+1}$ como solución de: hallar $u\in
+% la etapa $k+1$, calculamos $u^{k+1}$ como soluciÃƒÂ³n de: hallar $u\in
 % H^1(\Omega)$ tal que $u=g_0$ en $\Gamma_0$, $u=g_1$ en $\Gamma_1$ y
 % \begin{equation*}
 %   \left\{
@@ -701,9 +728,9 @@ where
 %     \end{aligned}
 %   \right.
 % \end{equation*}
-% Como se comentó antes, el problema anterior puede reformulado para
-% adaptarlo al marco de Lax-Milgram y, así, demostrar que existe una
-% única solución débil. A continuación, si pasamos al segundo miembro
+% Como se comentÃƒÂ³ antes, el problema anterior puede reformulado para
+% adaptarlo al marco de Lax-Milgram y, asÃƒÂ­, demostrar que existe una
+% ÃƒÂºnica soluciÃƒÂ³n dÃƒÂ©bil. A continuaciÃƒÂ³n, si pasamos al segundo miembro
 % los datos conocidos, podemos identificar las formas bilineal y lineal
 % siguientes:
 % \begin{equation*}
@@ -715,10 +742,10 @@ where
 %         +\int_\Omega \frac{u^{k}}{dt} v
 %     \end{aligned}
 % \end{equation*}
-% y a partir de ahí escribir el programa que se muestra a continuación, que
-% calculará la solución en cada etapa de tiempo (a través de un bucle
-% \verb|for|) y, en cada etapa, grabará en un fichero postscript la
-% solución correspondiente.
+% y a partir de ahÃƒÂ­ escribir el programa que se muestra a continuaciÃƒÂ³n, que
+% calcularÃƒÂ¡ la soluciÃƒÂ³n en cada etapa de tiempo (a travÃƒÂ©s de un bucle
+% \verb|for|) y, en cada etapa, grabarÃƒÂ¡ en un fichero postscript la
+% soluciÃƒÂ³n correspondiente.
 
 \subsubsection{\FF program}
 
@@ -768,7 +795,7 @@ fix $(u,v)=(1,0)$  (positive horizontal velocity). We use the stable
 FE combination  $\P2/\P1$ (polynomials with degree $2$ for velocity
 and degree $1$ for pressure).
 
-\subsubsection{Programación con \FF}
+\subsubsection{ProgramaciÃƒÂ³n con \FF}
 
 \lstset{language=freefem++}
 \begin{lstlisting}
