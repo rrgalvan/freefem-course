@@ -1,4 +1,3 @@
-% Created 2011-07-10 dom 13:39
 \documentclass[12pt]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -26,7 +25,7 @@
   anchorcolor=\refColor,
   citecolor=\refColor
 }
-\usepackage[hmargin={2.5cm,2cm}]{geometry}
+\usepackage[hmargin={2.5cm,2cm}, vmargin=2.4cm]{geometry}
 \tolerance=1000
 \usepackage{listings}
 \usepackage{math,ff++listings}
@@ -431,6 +430,17 @@ This piece of code contains the fundamentals of FEM with \FF.
   in the context of Stokes equations).
 \end{enumerate}
 
+\begin{exercise}
+  Modify the previous example for solving Poisson equation in the unit
+  square with $f=0$ and the following boundary conditions: $u=1$ on
+  the top edge of the square, $u=0$ on bottom, left and right edges of
+  the square.
+
+  \emph{Hint: use ``mesh Th=square(n,n)'' to define a mesh with n
+    subintervals in horizontal and vertical edges. Then boundary edges
+    are labeled as 0 (bottom), 1 (right), 2 (top) and 3 (left)}.
+\end{exercise}
+
 \subsection{Saving to VTK for high-quality graphics}
 
 Despite \FF includes powerful graphics, it also integrates nicely with
@@ -497,7 +507,7 @@ find $u:\overline\Omega \rightarrow \R$ such that:
     \end{aligned}
   \end{cases}
 \end{equation}
-I.e., we consider a Dirichlet b.c. in $\Gamma_D$ and
+Notice that we consider a Dirichlet b.c. in $\Gamma_D$ and
 a Neumann b.c on $\Gamma_N$. Remember that last condition means, means
 $\nabla u \cdot n=g_N$, where $n$ is the exterior normal vector.
 
@@ -509,19 +519,22 @@ $\nabla u \cdot n=g_N$, where $n$ is the exterior normal vector.
   $$
   where $u_0$ is a solution of the homogeneous problem
   ($u|_{\Gamma_D}=0$) and $u_D$ verifies $u|_{\Gamma_D}=g_D$.
-  In practice, for Dirichlet conditions one proceed as follows:
+  Algorithms for implementing generic Dirichlet conditions requires
+  some kind of computing technique\footnote{In practice, for Dirichlet
+    conditions one proceed as follows:
   \begin{enumerate}
   \item Build the FE linear system $Ax=b$, where $A$ comes from a
-    bilinear form, $a(\cdot,\cdot)$ and $b$ comes from a linear form,
+    bilinear form, $a(\cdot,\cdot)$ and $b$ comes from the linear form,
     $L(\cdot)$. Both of $A$ and $b$ are, typically constructed by
     quadrature formulae in triangles.
   \item Select the rows of $A$ and $b$ which correspond to equations
-    relative to degrees of freedom (for instance vertices of the
-    triangles) placed on $\Gamma_D$. Then modify them, imposing
-    explicitly the value of $u$ on that degrees of freedom.
+    for degrees of freedom on $\Gamma_D$. Then modify them,
+    imposing explicitly the value of $u$ on those degrees of
+    freedom. Typically, just the diagonal element and the RHS (containing
+    the boundary value) are multiplied by a Huge number.
   \end{enumerate}
-  This issue is automatized by \FF and then we are not going
-  deeper.
+} which is automatized by \FF (just the operator '\texttt{on(\ )}' is used
+as in previous examples) and then we are not going deeper.
 
   % writing the variational formulation, we  assume the homogeneous
   % Dirichlet condition
@@ -558,7 +571,164 @@ caption={Poisson problem with mixed Dirichlet/Neumann boundary conditions},
 label={dirich-neumann}
 ]{code/poisson-Dirich-Neumann.edp}
 
-\subsection{Poisson Problem With Robin Boundary Conditions}
+\section{Delving into the FreeFem++ language}
+\label{sec:delv-into-freef}
+
+\subsection{Data Types, Arrays and Matrices}
+\label{sec:data-types-arrays}
+
+Fundamental data types are similar to C++. But some fundamental types of C++ are not present in FreeFem++ (and vice versa) for instance:
+\lstinputlisting[
+caption={FreeFem++ fundamental data types and operations},
+]{code/variables.edp}
+
+\subsection{Linear System Associated to FEM}
+\label{part:line-syst-assoc}
+
+The keyword \texttt{varf} can be used in \FF to store the matrix and
+vector related to a variational formulation. Then the operator
+\verb|^-1*| can be used to solve the associated linear system.  The
+advantage of using the \texttt{varf} approach is that, if used
+properly, it is faster that \texttt{solve} or \texttt{problem} (about
+4 times faster, according to \FF documentation).
+
+The following script uses \texttt{varf} for solving Example~\ref{dirich-neumann}.
+
+\lstinputlisting[
+caption={Linear System Associated to Variational Formulation},
+]{code/poisson-varf.edp}
+
+\begin{exercise}
+  Compare computing time of \texttt{problem} and \texttt{varf}
+  approaches for solving the Poisson problem with Dirichlet
+  conditions.  Search FreeFem++ documentation for find a function
+  which can be utilized for calculation of the computing
+  time. \textit{Hint: use the function \texttt{clock(\ )} for getting
+    current time, then compute time difference.}
+\end{exercise}
+
+\section{Solving Evolution Equations}
+\label{sec:solv-evol-equat}
+
+\subsection{The Implicit Euler Method for the Heat Equation}
+\label{sec:heat-equation}
+\newcommand{\deltaT}{\Delta t}
+
+Former examples were steady, namely time independent. In this section we are going
+to solve the following transient problem (Heat equation with mixed
+Dirichlet+Neumann boundary conditions): find $u=u(x,t)$ such that
+\begin{equation}
+  \label{eq:heat equation}
+  \left\{
+    \begin{aligned}
+      \frac{\partial u}{\partial t} -\nu\Delta u &= f \quad \text{ in } \Omega, \\
+      u(0)&=u_0 \text{ in } \Omega, \\
+      u &= g_D \quad \text{ on } \Gamma_D, \\
+      \frac{\partial u}{\partial n} &= g_N \quad \text{ on } \Gamma_N.
+    \end{aligned}
+    \right.
+\end{equation}
+Here:
+\begin{itemize}
+\item $x\in\Omega\subset\R^2$, with smooth piecewise boundary,  $\partial\Omega=\Gamma_D\cup\Gamma_N$
+\item $t\in [0,T]$, where $T>0$ is the final time
+\item $u_0$: $\Omega\to\R$: temperature at initial time.
+\item $\nu>0$, $f:\Omega\times(0,T)\to\R$ (heat source in the domain).
+  $u_{\text{ext}}:\Gamma_N\times(0,T)\to\R$ (heat source on boundary $\Gamma_N$).
+\end{itemize}
+
+For time discretization, we fix $n\in\Nset$ and consider the
+following $n+1$ time instants in $[0,T]$:
+$$t_m= \deltaT\cdot k, \ m=0, ..., N$$
+where $\deltaT=T/N$ is the time step.
+
+The \textit{Implicit Euler} method for~(\ref{eq:heat equation}) can be
+written as follows:
+% \begin{align*}
+%   \frac{\partial u}{\partial t}  \approx \frac{u^{k+1}-u^k}{\deltaT} \\
+%   \Delta u \approx \Delta u^{k+1}
+% \end{align*}
+Given $u^0_h=u_0$, for each $m=0,...,N-1$, find $u^{m+1}_h\in U_h$ (space
+defined in section~\ref{sec:poisson-problem-with-mixed-bc}) such that:
+\begin{equation}
+  \label{eq:euler-implicit-heat-equation}
+  \left\{
+    \begin{aligned}
+      \frac{u^{m+1}_h-u^m_h}{\deltaT} -\nu\Delta u^{m+1}_h &= f^{m+1}_h \quad \text{ in } \Omega, \\
+      u^{m+1}_h &= g_D^{m+1} \quad \text{ on } \Gamma_D, \\
+      \frac{\partial u^{m+1}_h}{\partial n} &= g_N^{m+1} \quad \text{ on } \Gamma_N.
+    \end{aligned}
+    \right.
+\end{equation}
+Note that former problem can be written in variational formulation as follows:
+\begin{equation*}
+  a(u^{m+1}_h,v_h) = b(v_h) \quad \forall v_h\in U_h,
+\end{equation*}
+where
+\begin{equation*}
+    \begin{aligned}
+      a(u,v)&=\frac{1}{\deltaT} \int_\Omega u^{m+1} v + \nu\int_\Omega \nabla
+      u^{m+1} \cdot \nabla v,
+      \\
+      b(v)  &= \int_\Omega f \cdot v
+      +\frac{1}{\deltaT} \int_\Omega  u^{m} v
+      +\int{\Gamma_N} \nu\int_\Omega g1 v.
+    \end{aligned}
+\end{equation*}
+% \begin{equation}
+%   \begin{cases}
+%     \frac{\partial u}{\partial t} -\nu\Delta u = f \text{ in } \Omega\times(0,T), \\
+%     u = g_D \text{ on } \Gamma_D\times(0,T), \\
+%     u = g_N \text{ on } \Gamma_N\times(0,T), \\
+%   \end{cases}
+% \end{equation}
+
+
+% ecuaciÃ³n anterior, obtendremos el siguiente sistema en tiempo: En la
+% etapa inicial ($m=0$), tomamos $u^0=u(t=0)=u_0$. Conocidos los valores
+% $u^0,...,u^m$, que aproximan a los valores de $u(t_0),...,u(t_m)$, en
+% la etapa $m+1$, calculamos $u^{m+1}$ como soluciÃ³n de: hallar $u\in
+% H^1(\Omega)$ tal que $u=g_D$ en $\Gamma_D$, $u=g_N$ en $\Gamma_N$ y
+% \begin{equation*}
+%   \left\{
+%     \begin{aligned}
+%       &\int_\Omega\frac{u^{m+1}-u^m}{dt} v + \nu\int_\Omega \nabla u \cdot \nabla v
+%         = \int_\Omega f \cdot v
+%       \\
+%       &\text{para todo $v\in H_0^1(\Omega)$.}
+%     \end{aligned}
+%   \right.
+% \end{equation*}
+% Como se comentÃ³ antes, el problema anterior puede reformulado para
+% adaptarlo al marco de Lax-Milgram y, asÃ­, demostrar que existe una
+% Ãºnica soluciÃ³n dÃ©bil. A continuaciÃ³n, si pasamos al segundo miembro
+% los datos conocidos, podemos identificar las formas bilineal y lineal
+% siguientes:
+% \begin{equation*}
+%     \begin{aligned}
+%       a(u,v)&=\int_\Omega\frac{u^{m+1}}{dt} v + \nu\int_\Omega \nabla
+%       u \cdot \nabla v,
+%       \\
+%       b(v)  &= \int_\Omega f \cdot v
+%         +\int_\Omega \frac{u^{m}}{dt} v
+%     \end{aligned}
+% \end{equation*}
+% y a partir de ahÃ­ escribir el programa que se muestra a continuaciÃ³n, que
+% calcularÃ¡ la soluciÃ³n en cada etapa de tiempo (a travÃ©s de un bucle
+% \verb|for|) y, en cada etapa, grabarÃ¡ en un fichero postscript la
+% soluciÃ³n correspondiente.
+
+\subsubsection{\FF program}
+
+\lstinputlisting[
+caption={Heat Equation},
+label={lst:heat-ei}
+]
+{code/heat-EI.edp}
+
+\appendix
+
+\section{Poisson Problem With Robin Boundary Conditions}
 
 Let us consider the following PDE problem, which generalizes~(\ref{eq:poisson-mixto}):
 \begin{equation}
@@ -597,162 +767,6 @@ being $U_h$ defined as above.
   $a=1, b=1$ and the same domain and data as in
   \lstlistingname~\ref{dirich-neumann}.
 \end{exercise}
-
-\section{Delving into the FreeFem++ language}
-\label{sec:delv-into-freef}
-
-\subsection{Data Types, Arrays and Matrices}
-\label{sec:data-types-arrays}
-
-Fundamental data types are similar to C++. But some fundamental types of C++ are not present in FreeFem++ (and vice versa) for instance:
-\lstinputlisting[
-caption={FreeFem++ fundamental data types and operations},
-]{code/variables.edp}
-
-\subsection{Linear System Associated to Variational Formulation}
-\label{part:line-syst-assoc}
-
-In \FF, one can use the keyword \texttt{varf} to store the matrix and
-vector related to a variational formulation. Then the operator \verb|^-1*|
-can be used to solve the associated linear system.
-
-The advantage of using this procedure is that it is faster that
-\texttt{solve} or \texttt{problem} (about 4 times faster, according to
-\FF documentation).
-
-The following script uses \texttt{varf} for solving Example~\ref{dirich-neumann}.
-
-\lstinputlisting[
-caption={Linear System Associated to Variational Formulation},
-]{code/poisson-varf.edp}
-
-\begin{exercise}
-  Compare execution time of \texttt{problem} and \texttt{varf}
-  approaches for solving the Poisson problem with Dirichlet
-  conditions.  Search FreeFem++ documentation for find a function
-  which can be utilized for calculation of the computing time.
-\end{exercise}
-
-\section{Solving Evolution Equations}
-\label{sec:solv-evol-equat}
-
-\subsection{The Implicit Euler Method for the Heat Equation}
-\label{sec:heat-equation}
-\newcommand{\deltaT}{\Delta t}
-
-Former examples were steady, namely time independent. In this section we are going
-to solve the following transient problem (Heat equation with mixed
-Dirichlet+Neumann boundary conditions): find $u=u(x,t)$ such that
-\begin{equation}
-  \label{eq:heat equation}
-  \left\{
-    \begin{aligned}
-      \frac{\partial u}{\partial t} -\nu\Delta u &= f \quad \text{ in } \Omega, \\
-      u(0)&=u_0 \text{ in } \Omega, \\
-      u &= g_D \quad \text{ on } \Gamma_D, \\
-      \frac{\partial u}{\partial n} &= g_N \quad \text{ on } \Gamma_N.
-    \end{aligned}
-    \right.
-\end{equation}
-Here:
-\begin{itemize}
-\item $x\in\Omega\subset\R^2$, with smooth piecewise boundary,  $\partial\Omega=\Gamma_D\cup\Gamma_N$
-\item $t\in [0,T]$, where $T>0$ is the final time
-\item $u_0$: $\Omega\to\R$: temperature at initial time.
-\item $\nu>0$, $f:\Omega\times(0,T)\to\R$ (heat source in the domain).
-  $u_{\text{ext}}:\Gamma_N\times(0,T)\to\R$ (heat source on boundary $\Gamma_N$).
-\end{itemize}
-
-For time discretization, we fix $n\in\Nset$ and consider the
-following $n+1$ time instants in $[0,T]$:
-$$t_k= \deltaT\cdot k, \ k=0, ..., n,$$
-where $\deltaT/n$ is the time step.
-
-The \textit{Implicit Euler} method for~(\ref{eq:heat equation}) can be
-written as follows:
-% \begin{align*}
-%   \frac{\partial u}{\partial t}  \approx \frac{u^{k+1}-u^k}{\deltaT} \\
-%   \Delta u \approx \Delta u^{k+1}
-% \end{align*}
-Given $u^0_h=u_0$, for each $k=0,...,N-1$, find $u^{k+1}_h\in U_h$ (space
-defined in section~\ref{sec:poisson-problem-with-mixed-bc}) such that:
-\begin{equation}
-  \label{eq:euler-implicit-heat-equation}
-  \left\{
-    \begin{aligned}
-      \frac{u^{k+1}_h-u^k_h}{\deltaT} -\nu\Delta u^{k+1}_h &= f^{k+1}_h \quad \text{ in } \Omega, \\
-      u^{k+1}_h &= g_D^{k+1} \quad \text{ on } \Gamma_D, \\
-      \frac{\partial u^{k+1}_h}{\partial n} &= g_N^{k+1} \quad \text{ on } \Gamma_N.
-    \end{aligned}
-    \right.
-\end{equation}
-Note that former problem can be written in variational formulation as follows:
-\begin{equation*}
-  a(u^{k+1}_h,v_h) = b(v_h) \quad \forall v_h\in U_h,
-\end{equation*}
-where
-\begin{equation*}
-    \begin{aligned}
-      a(u,v)&=\frac{1}{\deltaT} \int_\Omega u^{k+1} v + \nu\int_\Omega \nabla
-      u^{k+1} \cdot \nabla v,
-      \\
-      b(v)  &= \int_\Omega f \cdot v
-      +\frac{1}{\deltaT} \int_\Omega  u^{k} v
-      +\int{\Gamma_N} \nu\int_\Omega g1 v.
-    \end{aligned}
-\end{equation*}
-% \begin{equation}
-%   \begin{cases}
-%     \frac{\partial u}{\partial t} -\nu\Delta u = f \text{ in } \Omega\times(0,T), \\
-%     u = g_D \text{ on } \Gamma_D\times(0,T), \\
-%     u = g_N \text{ on } \Gamma_N\times(0,T), \\
-%   \end{cases}
-% \end{equation}
-
-
-% ecuaciÃ³n anterior, obtendremos el siguiente sistema en tiempo: En la
-% etapa inicial ($k=0$), tomamos $u^0=u(t=0)=u_0$. Conocidos los valores
-% $u^0,...,u^k$, que aproximan a los valores de $u(t_0),...,u(t_k)$, en
-% la etapa $k+1$, calculamos $u^{k+1}$ como soluciÃ³n de: hallar $u\in
-% H^1(\Omega)$ tal que $u=g_D$ en $\Gamma_D$, $u=g_N$ en $\Gamma_N$ y
-% \begin{equation*}
-%   \left\{
-%     \begin{aligned}
-%       &\int_\Omega\frac{u^{k+1}-u^k}{dt} v + \nu\int_\Omega \nabla u \cdot \nabla v
-%         = \int_\Omega f \cdot v
-%       \\
-%       &\text{para todo $v\in H_0^1(\Omega)$.}
-%     \end{aligned}
-%   \right.
-% \end{equation*}
-% Como se comentÃ³ antes, el problema anterior puede reformulado para
-% adaptarlo al marco de Lax-Milgram y, asÃ­, demostrar que existe una
-% Ãºnica soluciÃ³n dÃ©bil. A continuaciÃ³n, si pasamos al segundo miembro
-% los datos conocidos, podemos identificar las formas bilineal y lineal
-% siguientes:
-% \begin{equation*}
-%     \begin{aligned}
-%       a(u,v)&=\int_\Omega\frac{u^{k+1}}{dt} v + \nu\int_\Omega \nabla
-%       u \cdot \nabla v,
-%       \\
-%       b(v)  &= \int_\Omega f \cdot v
-%         +\int_\Omega \frac{u^{k}}{dt} v
-%     \end{aligned}
-% \end{equation*}
-% y a partir de ahÃ­ escribir el programa que se muestra a continuaciÃ³n, que
-% calcularÃ¡ la soluciÃ³n en cada etapa de tiempo (a travÃ©s de un bucle
-% \verb|for|) y, en cada etapa, grabarÃ¡ en un fichero postscript la
-% soluciÃ³n correspondiente.
-
-\subsubsection{\FF program}
-
-\lstinputlisting[
-caption={Heat Equation},
-label={lst:heat-ei}
-]
-{code/heat-EI.edp}
-
-\appendix
 
 \section{The Stokes equations}
 \label{sec:stokes}

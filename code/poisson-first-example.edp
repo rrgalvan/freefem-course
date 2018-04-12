@@ -1,7 +1,7 @@
 border gamma(t=0, 2*pi) { x=cos(t); y=sin(t); } // Define boundary
 mesh Th = buildmesh(gamma(20)); // Build mesh with 20 intervals on boundary
-fespace Xh(Th,P1); // Define P1 finite element space
-Xh u,v; // Build two functions in this space (unknown and test function)
+fespace Vh(Th,P1); // Define P1 finite element space
+Vh u,v; // Build two functions in this space (unknown and test function)
 func f = exp(x)*sin(y);  // Right hand side
 solve Dirichlet(u,v) =   // Define variational formulation
   int2d(Th) ( dx(u)*dx(v) + dy(u)*dy(v) )

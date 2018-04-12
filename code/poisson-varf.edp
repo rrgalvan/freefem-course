@@ -16,16 +16,20 @@ func g=0;
 
 // 2.- Defining the problem
 
-varf PoissonDirichletVarf(u,v) =
+varf PoissonDirichletMatrix(u,v) =
   // Bilinear form:
   int2d(Th)( nu*( dx(u)*dx(v) + dy(u)*dy(v) ))
-  // Linear form:
-  - int2d(Th)( f*v )
   // Dirichlet boundary condition
   + on(dirichletBoundary, u=g);
 
-matrix A = PoissonDirichletVarf (Vh, Vh); // Mount sparse matrix
-real[int] b = PoissonDirichletVarf(0, Vh); // Mount RHS
+varf PoissonDirichletRHS(u,v) =
+  // Linear form:
+  int2d(Th)( f*v )
+  // Dirichlet boundary condition
+  + on(dirichletBoundary, u=g);
+
+matrix A = PoissonDirichletMatrix (Vh, Vh); // Mount sparse matrix
+real[int] b = PoissonDirichletRHS(0, Vh); // Mount RHS
 
 u[] = A^-1 * b; // Solve the linear system and store vector into u
 
