@@ -40,7 +40,7 @@
 
 \newcommand{\FF}{\textit{FreeFem++}\xspace}
 \newcommand{\FFcs}{\textit{FreeFem-cs}\xspace}
-\renewcommand{\P}{\mathcal{P}_}
+\renewcommand{\P}{\mathbb{P}_}
 \newcommand{\R}{{\mathbb R}}
 
 \newcounter{exercise}
@@ -86,11 +86,15 @@
     % keywordstyle=\color{magenta},
     % numberstyle=\tiny\color{codegray},
     % stringstyle=\color{codepurple},
-    % % basicstyle=\footnotesize,
+    basicstyle=\footnotesize\ttfamily,
+    % basicstyle=\linespread{1.2}, % Line spacing
     % breakatwhitespace=false,
     % breaklines=true,
     % numbers=left,
     % numbersep=5pt,
+    aboveskip=1.0em,
+    belowskip=1.0em,
+    language=freefem++
 }
 \lstset{style=mystyle}
 % -----------------------------------
@@ -148,13 +152,14 @@ Element Method} (FEM). \FF is composed of:
 \end{center}
 
 \subsection{What can you do with \FF?}
-Some examples related to 2D steady Stokes equations:
+Let us present two examples, both of them related to the 2D steady
+Stokes equations (which model viscous incompressible homogeneous fluxes):
 \begin{equation*}
   \left\{
   \begin{aligned}
-    -\nu\Delta \mathbf{u}+ \nabla p &= f
+    -&\nu\Delta \mathbf{u}+ \nabla p= f
     \\
-    \nabla\cdot \mathbf{u} & = 0
+    &\nabla\cdot \mathbf{u}  = 0
     \\ & + \text{boundary conditions},
   \end{aligned}
   \right.
@@ -203,8 +208,8 @@ and $p:\Omega\to\R$ pressure in each point of the domain.
     tools for high-quality graphics.
   \item Other issues:
     \begin{itemize}
-    \item Excellent documentation (with a plenty of examples and
-      tutorials):
+    \item Excellent documentation, including a \textbf{manual} (with a
+      plenty of examples and tutorials):
       \url{http://www.freefem.org/ff++/ftp/freefem++doc.pdf}.
     \item (Matlab/Octave/Python/Fortran)--like matrix manipulation.
     \item Automatic interpolation between meshes, adaptive refinement,...
@@ -218,9 +223,12 @@ and $p:\Omega\to\R$ pressure in each point of the domain.
 \section{Installation and first steps}
 \label{sec:inst-first-steps}
 
-The \FF package includes an interpreter for execution of code but no
+\FF is available for \href{http://www.freefem.org/}{download from its
+  web page} or from the software center of some operative systems
+(e.g. Debian or Ubuntu GNU/Linux).  Once installed, the \FF standard
+distribution includes an interpreter for execution of code but no
 editor or integrated environment (with editor, error feedback, syntax
-highlighting, etc.) is included. User is allowed to choose his/her
+highlighting, etc.). User is allowed to choose his/her
 preferred editor between different possibilities, for instance (see
 \FF manual for details):
 
@@ -249,6 +257,12 @@ Here we review the configuration of the last two ones.
 Emacs can be installed form its
 \href{https://www.gnu.org/software/emacs}{web page} of from the
 software center of your operative system.
+A \FF mode is available for Emacs, providing:
+\begin{itemize}
+\item Color-coded editor with automatic highlighting of \FF.
+\item Integrated interface for running \FF scripts.
+\item Tracking of compilation errors, linked back to the EDP source code.
+\end{itemize}
 
 For a \textbf{easy configuration} from scratch, it suffices to
 download and unzip \textit{in your home user directory} the file
@@ -258,22 +272,16 @@ download and unzip \textit{in your home user directory} the file
 For advanced configuration of \FF mode on Emacs, follow the
 instructions from \url{https://github.com/rrgalvan/freefem-mode}.
 
-
-
-\subsection{\FFcs: an integrated environment for \FF}
+\subsection{Using \FF under the integrated environment \FFcs}
 \label{sec:freefem-CS}
 
-\FFcs (\textit{CS} $\leftarrow$ Client/Server) is package which contains
-both \FF and an integrated environment for \FF providing an intuitive
-interface. It adds to \FF the following goodies:
+\FFcs (\textit{CS} $\leftarrow$ Client/Server) is a multiple-platform
+package which contains both \FF and an integrated environment for \FF
+providing an intuitive interface. It adds to the goodies described for
+Emacs the following characteristics:
 \begin{itemize}
-\item Integrated interface, aimed at making users comfortable.
-\item Color-coded editor.
-\item Automatic highlighting of \FF.
-\item Compilation errors, linked back to the EDP source code.
 \item Integrated graphics area for 2d and 3d.
 \item Online help including documentation in HTML.
-\item Multi-platform (Windows--GNU/Linux--MacOS).
 \end{itemize}
 
 
@@ -285,76 +293,66 @@ follow the specific instructions for each  platform (which consist in
 only a few steps). For instance:
 
 \begin{itemize}
+\item \textit{GNU/Linux} and \textit{MacOS}: Decompress the
+  \texttt{.tgz} or the \texttt{.zip} file in your preferred location
+  (for instance, in the desktop). Run the program \textit{FreeFem++-cs}.
 \item \textit{Windows}: Execute the installation program and follow
   usual steps. Once installed, click on the \textit{FreeFem++-cs} icon
   and start using the application.
-\item \textit{GNU/Linux} (\textit{Ubuntu}, \textit{Debian} and
-  others): Decompress the \texttt{.tgz} in your preferred location (for
-  instance, in the desktop). Run the program \textit{FreeFem++-cs}
-  (located in the folder created when decompress).
-\item \textit{MacOS}: Decompress the \texttt{.zip} file in your
-  preferred location (e.g. in the desktop). Run \textit{FreeFem++cs}.
 \end{itemize}
 
-\begin{exercise}
-  Download \FFcs from the web (choose the adequate version for your
-  preferred operative system) and install it.
-\end{exercise}
-
-\begin{exercise}
-  Open the FreeFem++ manual,
-  \url{http://www.freefem.org/ff++/ftp/freefem++doc.pdf}, and search
-  for recommended editors (in Section 1.1). Choose an editor, install
-  and configure it for use with \FF.
-\end{exercise}
-
-\subsubsection{First steps with \FFcs}
-
-\FFcs is composed of three different panels:
-\begin{enumerate}
-\item Editor with syntax highlighting (left).
-\item Messages returned by the interpreter (bottom).
-\item Graphics generated by our numerical simulation (right).
-end{enumerate}
-\end{enumerate}
-
-Other Characteristics:
-
-\begin{itemize}
-\item The FreeFem++ script (program) can be run at any time by
-  clicking in the \texttt{Run} buttom (top left), or pressing
-  \texttt{Ctrl+Shift+R}.
-\item The script can be stopped at any time by clicking the
-  \texttt{Kill} button (top left).
-\item Dragging a \FF script file into \FFcs (icon or editor) makes \FFcs
-  edit that script.
-\end{itemize}
+\subsection{First steps with \FF}
 
 In the following exercise, we write a very simple FreeFem++ script
-which (a) plots a simple mesh in the unit square
-$[0,1]\times[0,1]$, which is defined by two subintervals (of $[0,1]$)
-in the $x$ axis and also two subintervals in $y$.
+which plots a simple mesh in the unit square $[0,1]\times[0,1]$. This
+mesh is defined by the subdivision of $[0,1]$ into to sub-intervals
+(both in the $x$ axis in the $y$ axis).
 \begin{exercise}
-  Write the following code and run it. Test that a graphic appears in the
-  right panel and a message is written in the bottom panel.
+  Write the following code and run it. Test that a graphic
+  is opened and a message is written in the bottom panel.
 \begin{lstlisting}
 mesh Th = square(2,2); // Declare a mesh object and build it
 plot(Th);
-cout << "Hello world!" << endl;
+cout << "This first mesh was properly drawn" << endl;
 \end{lstlisting}
+Former code may result quite familiar to C++ programmers. In
+particular, notice that commentaries can be introduced by the
+\texttt{//} operator and console output is produced by the familar C++
+keywords \texttt{cout}, \texttt{endl} and the C++ streaming operator
+\verb|<<|. On the other hand, \texttt{mesh} definition resembles C++
+object constructors.
+
+When running this example, a window will be opened showing the
+mesh\footnote{Although in \FFcs, windows are opened in the right top
+  panel}. Although this window contains no buttons or menus, it can be
+controlled by the keyboard and by variables passed when
+plotting. Press '\texttt{?}' key for help and for details see the \FF
+manual and
+\href{http://www.um.es/freefemv3/ff++/pmwiki.php?n=FFDoc.Plot}{'Plot'
+  page in the FreeFem++ Wiki Manual}.
+
+You can also notice that \FF produces a verbose
+output\footnote{Which can be controlled by setting the variable
+  \texttt{verb=n}, where \texttt{n} indicates the verbosity level. So
+  that \texttt{verb=0} sets the lowest verbosity level.}, including
+the whole code that was run and also some extra information and the
+text which is streamed to the standard output using the keyword
+'\texttt{cout}'.
+
 \end{exercise}
 
-Former code may result quite familiar to C++ programmers.
 
-\subsection{A first realistic example}
+\subsection{A First Realistic Example}
 
-Now we are going to solve for the first time a PDE system by means of
-the FEM method. More complex problems are left for further sections.
-Specifically, here we are going to solve the following example (Poisson
-equation with homogeneous Dirichlet boundary conditions):
+In this section we are going to solve a simple elliptic PDE problem by
+means of the FEM method. More complex problems are left for further
+sections.  Specifically, here we are going to solve the following
+example (Poisson equation with homogeneous Dirichlet boundary
+conditions) in a domain $\Omega\subset\Rset^2$ defined as the unit
+circle:
 \begin{equation*}
   \begin{cases}
-    \text{Find } u:\bar\Omega \rightarrow \Rset
+    \text{Find } u:\overline\Omega \rightarrow \Rset
     \text{ such  that}
     \\\noalign{\medskip}
     \begin{aligned}
@@ -371,7 +369,7 @@ For that purpose, we proceed as follows:
   \vspace{-1ex}
   \begin{equation*}
     \begin{cases}
-      \text{Find } u:\bar\Omega \rightarrow \Rset
+      \text{Find } u:\overline\Omega \rightarrow \Rset
       \text{ such that }
       \\\noalign{\medskip}
       \begin{aligned}
@@ -382,12 +380,12 @@ For that purpose, we proceed as follows:
     \end{cases}
     \hspace{-1em}\leadsto\quad
     \begin{cases}
-      \text{Find $u_h\in X_{h}$ such that}
+      \text{Find $u_h\in V_{h}$ such that}
       \\\noalign{\medskip}
       \begin{aligned}
         \int_\Omega \nabla u_h \cdot \nabla v_h = \int_\Omega f \cdot
         v_h,
-        \quad \forall v_h\in X_{h}.
+        \quad \forall v_h\in V_{h}.
       \end{aligned}
     \end{cases}
   \end{equation*}
@@ -405,7 +403,7 @@ This piece of code contains the fundamentals of FEM with \FF.
 \item In lines 1 and 2 we define the circular domain. The technique
   consists of the parametrization of the boundary. Any domain with
   parametrizable boundary can be easily introduced in \FF.  For other
-  domains, one has to use a specific tool for mesh construction and
+  domains, one has to use a specific tool for mesh construction.
 \item In line 3 we define the FE (finite element) space,
   $\P1$--Lagrange in this case, and in line 4 we declare two variables
   in this space. We intend to use the first one, \texttt{u}, as the FE
@@ -420,21 +418,24 @@ This piece of code contains the fundamentals of FEM with \FF.
   \item By default, PDE operators like gradient ($\nabla$) are not
     predefined (although they can be defined using macros, as we see
     in a further section). So one must use the operators \texttt{dx}
-    ($\frac{\partial}{\partial x}$) and \texttt{dy}
-    ($\frac{\partial}{\partial y}$). For 3D programs, also \texttt{dz}
+    (i.e. $\frac{\partial}{\partial x}$) and \texttt{dy}
+    (i.e. $\frac{\partial}{\partial y}$). For 3D programs, also \texttt{dz}
     can be employed.
   \item Dirichlet conditions are imposed as the ``artificial'' sum of
     a term to the bilinear form.
   \end{enumerate}
 
 \item Finally, in line 10 we plot the obtained solution. Scalar data
-  (as, in this case, $u$) is plotted by contour plots, while vector
+  (as is, in this case, $u$) is plotted by contour plots, while vector
   data is plotted as arrow field (for instance, the velocity unknown
   in the context of Stokes equations).
 \end{enumerate}
 
-
 \subsection{Saving to VTK for high-quality graphics}
+
+Despite \FF includes powerful graphics, it also integrates nicely with
+data analysis and visualization software
+through the VTK file format.
 
 VTK consists of an open source C++ library for visualization of
 different types of data (scalar, vector, tensor, etc.). Last versions
@@ -468,48 +469,46 @@ access the data in the future (for instance using Paraview).
 \section{Other Boundary Conditions}
 \label{sec:complex-problems}
 
-In this section we go beyond the Poisson problem and generalize it in
-different ways.
+In this section we go beyond the Poisson problem and generalize it for different boundary conditions:
 \begin{enumerate}
-\item Introducing other kind of boundary conditions (Neumann b.c.)
-\item Handling transient (time dependent) problems (Heat equation).
+\item Neumann boundary conditions.
+\item Robin boundary conditions.
 \end{enumerate}
 
 \subsection{Poisson Problem With Mixed Neumann/Dirichlet Boundary Conditions}
 \label{sec:poisson-problem-with-mixed-bc}
 
-We set the problem: given
+Let us consider the following problem: given
 \begin{itemize}
-\item $\Omega\subset\R^2$, with smooth piecewise boundary, where we
-  distinguish two zones:
-  $\partial\Omega=\Gamma_0\cup\Gamma_1$
-\item $\nu>0$, \quad $f:\Omega\to\R$, \quad $g:\Gamma_0\to\R$
+\item $\Omega\subset\R^2$, with smooth piecewise boundary, divided into
+  two non-empty subsets:
+  $\partial\Omega=\Gamma_D\cup\Gamma_N$,
+\item $\nu>0$, $f: \Omega \to \Rset$, $g_D:\Gamma_D\to\Rset$ and
+$g_N:\Gamma_N\to\Rset$,
 \end{itemize}
-Given $f: \Omega \to \Rset$, $g_0:\Gamma_0\to\Rset$ and
-$g_2:\Gamma_1\to\Rset$, we try to find $u:\bar\Omega \rightarrow \R$
-such that:
+find $u:\overline\Omega \rightarrow \R$ such that:
 \begin{equation}
   \label{eq:poisson-mixto}
   \begin{cases}
     \begin{aligned}
       -\nu\Delta u &= f \quad \text{ in } \Omega, \\
-      u &= g_0 \quad \text{ on } \Gamma_0, \\
-      \frac{\partial u}{\partial n} &= g_1 \quad \text{ on } \Gamma_1.
+      u &= g_D \quad \text{ on } \Gamma_D, \\
+      \frac{\partial u}{\partial n} &= g_N \quad \text{ on } \Gamma_N.
     \end{aligned}
   \end{cases}
 \end{equation}
-Then one has have a (non homogeneous) Dirichlet b.c. in $\Gamma_0$ and
-a Neumann b.c on $\Gamma_1$. Remember that last condition means, means
-$\nabla u \cdot n=g_1$, where $n$ is the exterior normal vector.
+I.e., we consider a Dirichlet b.c. in $\Gamma_D$ and
+a Neumann b.c on $\Gamma_N$. Remember that last condition means, means
+$\nabla u \cdot n=g_N$, where $n$ is the exterior normal vector.
 
 \begin{itemize}
 \item The theory for \textbf{non-homogeneous Dirichlet} conditions,
-  $u|_{\Gamma_0}=g_0$, is based on writing the solution as
+  $u|_{\Gamma_D}=g_D$, is based on writing the solution as
   $$
   u = u_0 + u_D,
   $$
   where $u_0$ is a solution of the homogeneous problem
-  ($u|_{\Gamma_0}=0$) while $u_D$ verifies $u|_{\Gamma_0}=g_0$.
+  ($u|_{\Gamma_D}=0$) and $u_D$ verifies $u|_{\Gamma_D}=g_D$.
   In practice, for Dirichlet conditions one proceed as follows:
   \begin{enumerate}
   \item Build the FE linear system $Ax=b$, where $A$ comes from a
@@ -526,35 +525,33 @@ $\nabla u \cdot n=g_1$, where $n$ is the exterior normal vector.
 
   % writing the variational formulation, we  assume the homogeneous
   % Dirichlet condition
-  % $$u=0 \text{ on } \Gamma_1,$$
-  % and imposing later $u=g_0$ on $\Gamma_0$.
-\item But Neumann boundary conditions appear in a natural way in the
+  % $$u=0 \text{ on } \Gamma_N,$$
+  % and imposing later $u=g_D$ on $\Gamma_D$.
+\item Moreover \textbf{Neumann boundary conditions} appear in a natural way in the
   variational formulation. Specifically, when the Green formula
   (integration by parts) is applied, one gets the following problem:
   \begin{equation*}
       \begin{cases}
-      \text{Find $u_h\in U_{h}$ such that}
+      \text{Find $u_h\in V_{h}$ such that}
       \\\noalign{\medskip}
       \begin{aligned}
         \nu\int_\Omega \nabla u_h \cdot \nabla v_h = \int_\Omega f\, v_h
-        + \nu\int_{\Gamma_1} g_1\, v_h
-        \quad\text{for each } v_h\in U_{h},
+        + \nu\int_{\Gamma_N} g_N\, v_h
+        \quad\text{for all } v_h\in V_{h},
       \end{aligned}
     \end{cases}
   \end{equation*}
-  being $U_h$ the set of functions $u_h:\Omega\to\Rset$ such that
-  \begin{itemize}
-  \item $u_h|_T \in \mathbb{P}_k[x]$ (polynomials of degree $k$) for
-    all $T\in \mathcal{T}_h$ and
-  \item $u_h|_{\Gamma_0}=0$.
+  where for a fixed polynomial degree $k\in\mathbb{N}$,
+  $$V_h=\big\{v_h\in C^0(\Omega) \text{ such that }
+  v_h|_T \in \mathbb{P}_k[x] \ \forall T\in \mathcal{T}_h \text{ and } v_h|_{\Gamma_D}=0\big\}.
+  $$
   \end{itemize}
-\end{itemize}
 
-\subsubsection{FreeFem++ Example}
-
-Here we show a FreeFem++ program for the Poisson problem presented above
-Note that here we use the keyword \texttt{problem} for
-defining the variational problem, which is solved later (instead of \texttt{solve}, which was used in Example~\ref{first-example} for defining and solving the problem).
+  Here we show a FreeFem++ program for the Poisson problem presented
+  above.  Here we use the keyword \texttt{problem} for defining the
+  variational problem, which is solved later (instead of
+  \texttt{solve}, which was used in Example~\ref{first-example} for
+  defining and solving the problem).
 
 \lstinputlisting[
 caption={Poisson problem with mixed Dirichlet/Neumann boundary conditions},
@@ -563,14 +560,14 @@ label={dirich-neumann}
 
 \subsection{Poisson Problem With Robin Boundary Conditions}
 
-Let us consider the differential problem, which generalizes~(\ref{eq:poisson-mixto}):
+Let us consider the following PDE problem, which generalizes~(\ref{eq:poisson-mixto}):
 \begin{equation}
   \label{eq:poisson-robin}
   \begin{cases}
     \begin{aligned}
       -\nu\Delta u &= f \quad \text{ in } \Omega, \\
-      u &= g_0 \quad \text{ on } \Gamma_0, \\
-      au + b \frac{\partial u}{\partial n} &= g_1 \quad \text{ on } \Gamma_1,
+      u &= g_D \quad \text{ on } \Gamma_D, \\
+      au + b \frac{\partial u}{\partial n} &= g_N \quad \text{ on } \Gamma_N,
     \end{aligned}
   \end{cases}
 \end{equation}
@@ -585,9 +582,9 @@ Integration by parts one can obtain the following variational formulation:
     \\\noalign{\medskip}
     \begin{aligned}
       \nu\int_\Omega \nabla u_h \cdot \nabla v_h
-      + \nu\frac a b \int_{\Gamma_1} u v
+      + \nu\frac a b \int_{\Gamma_N} u v
       = \int_\Omega f\, v_h
-      + \nu \frac 1b \int_{\Gamma_1} g_1\, v_h
+      + \nu \frac 1b \int_{\Gamma_N} g_N\, v_h
       \quad\text{for each } v_h\in U_{h},
     \end{aligned}
   \end{cases}
@@ -639,12 +636,12 @@ caption={Linear System Associated to Variational Formulation},
 \section{Solving Evolution Equations}
 \label{sec:solv-evol-equat}
 
-\subsubsection{The Implicit Euler Method for the Heat Equation}
+\subsection{The Implicit Euler Method for the Heat Equation}
 \label{sec:heat-equation}
 \newcommand{\deltaT}{\Delta t}
 
-Former examples were steady, namely time independent. Now we are going
-to solve following transient problem (Heat equation with mixed
+Former examples were steady, namely time independent. In this section we are going
+to solve the following transient problem (Heat equation with mixed
 Dirichlet+Neumann boundary conditions): find $u=u(x,t)$ such that
 \begin{equation}
   \label{eq:heat equation}
@@ -652,18 +649,18 @@ Dirichlet+Neumann boundary conditions): find $u=u(x,t)$ such that
     \begin{aligned}
       \frac{\partial u}{\partial t} -\nu\Delta u &= f \quad \text{ in } \Omega, \\
       u(0)&=u_0 \text{ in } \Omega, \\
-      u &= g_0 \quad \text{ on } \Gamma_0, \\
-      \frac{\partial u}{\partial n} &= g_1 \quad \text{ on } \Gamma_1.
+      u &= g_D \quad \text{ on } \Gamma_D, \\
+      \frac{\partial u}{\partial n} &= g_N \quad \text{ on } \Gamma_N.
     \end{aligned}
     \right.
 \end{equation}
 Here:
 \begin{itemize}
-\item $x\in\Omega\subset\R^2$, with smooth piecewise boundary,  $\partial\Omega=\Gamma_0\cup\Gamma_1$
+\item $x\in\Omega\subset\R^2$, with smooth piecewise boundary,  $\partial\Omega=\Gamma_D\cup\Gamma_N$
 \item $t\in [0,T]$, where $T>0$ is the final time
 \item $u_0$: $\Omega\to\R$: temperature at initial time.
 \item $\nu>0$, $f:\Omega\times(0,T)\to\R$ (heat source in the domain).
-  $u_{\text{ext}}:\Gamma_1\times(0,T)\to\R$ (heat source on boundary $\Gamma_1$).
+  $u_{\text{ext}}:\Gamma_N\times(0,T)\to\R$ (heat source on boundary $\Gamma_N$).
 \end{itemize}
 
 For time discretization, we fix $n\in\Nset$ and consider the
@@ -684,8 +681,8 @@ defined in section~\ref{sec:poisson-problem-with-mixed-bc}) such that:
   \left\{
     \begin{aligned}
       \frac{u^{k+1}_h-u^k_h}{\deltaT} -\nu\Delta u^{k+1}_h &= f^{k+1}_h \quad \text{ in } \Omega, \\
-      u^{k+1}_h &= g_0^{k+1} \quad \text{ on } \Gamma_0, \\
-      \frac{\partial u^{k+1}_h}{\partial n} &= g_1^{k+1} \quad \text{ on } \Gamma_1.
+      u^{k+1}_h &= g_D^{k+1} \quad \text{ on } \Gamma_D, \\
+      \frac{\partial u^{k+1}_h}{\partial n} &= g_N^{k+1} \quad \text{ on } \Gamma_N.
     \end{aligned}
     \right.
 \end{equation}
@@ -701,14 +698,14 @@ where
       \\
       b(v)  &= \int_\Omega f \cdot v
       +\frac{1}{\deltaT} \int_\Omega  u^{k} v
-      +\int{\Gamma_1} \nu\int_\Omega g1 v.
+      +\int{\Gamma_N} \nu\int_\Omega g1 v.
     \end{aligned}
 \end{equation*}
 % \begin{equation}
 %   \begin{cases}
 %     \frac{\partial u}{\partial t} -\nu\Delta u = f \text{ in } \Omega\times(0,T), \\
-%     u = g_0 \text{ on } \Gamma_0\times(0,T), \\
-%     u = g_1 \text{ on } \Gamma_1\times(0,T), \\
+%     u = g_D \text{ on } \Gamma_D\times(0,T), \\
+%     u = g_N \text{ on } \Gamma_N\times(0,T), \\
 %   \end{cases}
 % \end{equation}
 
@@ -717,7 +714,7 @@ where
 % etapa inicial ($k=0$), tomamos $u^0=u(t=0)=u_0$. Conocidos los valores
 % $u^0,...,u^k$, que aproximan a los valores de $u(t_0),...,u(t_k)$, en
 % la etapa $k+1$, calculamos $u^{k+1}$ como soluciÃ³n de: hallar $u\in
-% H^1(\Omega)$ tal que $u=g_0$ en $\Gamma_0$, $u=g_1$ en $\Gamma_1$ y
+% H^1(\Omega)$ tal que $u=g_D$ en $\Gamma_D$, $u=g_N$ en $\Gamma_N$ y
 % \begin{equation*}
 %   \left\{
 %     \begin{aligned}
@@ -750,12 +747,14 @@ where
 \subsubsection{\FF program}
 
 \lstinputlisting[
-caption={Stokes Equations},
+caption={Heat Equation},
 label={lst:heat-ei}
 ]
 {code/heat-EI.edp}
 
-\subsection{The Stokes equations}
+\appendix
+
+\section{The Stokes equations}
 \label{sec:stokes}
 
 The Stokes equations can be considered as the linear steady version of
@@ -795,10 +794,12 @@ fix $(u,v)=(1,0)$  (positive horizontal velocity). We use the stable
 FE combination  $\P2/\P1$ (polynomials with degree $2$ for velocity
 and degree $1$ for pressure).
 
-\subsubsection{ProgramaciÃ³n con \FF}
+
+
+\subsection{\FF Programming of 2D Stokes System}
 
 \lstset{language=freefem++}
-\begin{lstlisting}
+\begin{lstlisting} [caption={Steady Stokes System}]
 // 2D Stokes equations
 // Cavity test in a domain with some parametric holes
 
@@ -866,8 +867,6 @@ load "iovtk";
 savevtk("/tmp/stokes.vtk", Th, [u,v,0], p);
 \end{lstlisting}
 
-
-\appendix
 
 \section{Paraview}
 \label{sec:brief-intro-paraview}
