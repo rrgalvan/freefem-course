@@ -1,4 +1,3 @@
-% Created 2011-07-10 dom 13:39
 \documentclass[12pt]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -26,7 +25,7 @@
   anchorcolor=\refColor,
   citecolor=\refColor
 }
-\usepackage[hmargin={2.5cm,2cm}]{geometry}
+\usepackage[hmargin={2.5cm,2cm}, vmargin=2.4cm]{geometry}
 \tolerance=1000
 \usepackage{listings}
 \usepackage{math,ff++listings}
@@ -431,6 +430,17 @@ This piece of code contains the fundamentals of FEM with \FF.
   in the context of Stokes equations).
 \end{enumerate}
 
+\begin{exercise}
+  Modify the previous example for solving Poisson equation in the unit
+  square with $f=0$ and the following boundary conditions: $u=1$ on
+  the top edge of the square, $u=0$ on bottom, left and right edges of
+  the square.
+
+  \emph{Hint: use ``mesh Th=square(n,n)'' to define a mesh with n
+    subintervals in horizontal and vertical edges. Then boundary edges
+    are labeled as 0 (bottom), 1 (right), 2 (top) and 3 (left)}.
+\end{exercise}
+
 \subsection{Saving to VTK for high-quality graphics}
 
 Despite \FF includes powerful graphics, it also integrates nicely with
@@ -497,7 +507,7 @@ find $u:\overline\Omega \rightarrow \R$ such that:
     \end{aligned}
   \end{cases}
 \end{equation}
-I.e., we consider a Dirichlet b.c. in $\Gamma_D$ and
+Notice that we consider a Dirichlet b.c. in $\Gamma_D$ and
 a Neumann b.c on $\Gamma_N$. Remember that last condition means, means
 $\nabla u \cdot n=g_N$, where $n$ is the exterior normal vector.
 
@@ -509,19 +519,22 @@ $\nabla u \cdot n=g_N$, where $n$ is the exterior normal vector.
   $$
   where $u_0$ is a solution of the homogeneous problem
   ($u|_{\Gamma_D}=0$) and $u_D$ verifies $u|_{\Gamma_D}=g_D$.
-  In practice, for Dirichlet conditions one proceed as follows:
+  Algorithms for implementing generic Dirichlet conditions requires
+  some kind of computing technique\footnote{In practice, for Dirichlet
+    conditions one proceed as follows:
   \begin{enumerate}
   \item Build the FE linear system $Ax=b$, where $A$ comes from a
-    bilinear form, $a(\cdot,\cdot)$ and $b$ comes from a linear form,
+    bilinear form, $a(\cdot,\cdot)$ and $b$ comes from the linear form,
     $L(\cdot)$. Both of $A$ and $b$ are, typically constructed by
     quadrature formulae in triangles.
   \item Select the rows of $A$ and $b$ which correspond to equations
-    relative to degrees of freedom (for instance vertices of the
-    triangles) placed on $\Gamma_D$. Then modify them, imposing
-    explicitly the value of $u$ on that degrees of freedom.
+    for degrees of freedom on $\Gamma_D$. Then modify them,
+    imposing explicitly the value of $u$ on those degrees of
+    freedom. Typically, just the diagonal element and the RHS (containing
+    the boundary value) are multiplied by a Huge number.
   \end{enumerate}
-  This issue is automatized by \FF and then we are not going
-  deeper.
+} which is automatized by \FF (just the operator '\texttt{on(\ )}' is used
+as in previous examples) and then we are not going deeper.
 
   % writing the variational formulation, we  assume the homogeneous
   % Dirichlet condition
@@ -558,46 +571,6 @@ caption={Poisson problem with mixed Dirichlet/Neumann boundary conditions},
 label={dirich-neumann}
 ]{code/poisson-Dirich-Neumann.edp}
 
-\subsection{Poisson Problem With Robin Boundary Conditions}
-
-Let us consider the following PDE problem, which generalizes~(\ref{eq:poisson-mixto}):
-\begin{equation}
-  \label{eq:poisson-robin}
-  \begin{cases}
-    \begin{aligned}
-      -\nu\Delta u &= f \quad \text{ in } \Omega, \\
-      u &= g_D \quad \text{ on } \Gamma_D, \\
-      au + b \frac{\partial u}{\partial n} &= g_N \quad \text{ on } \Gamma_N,
-    \end{aligned}
-  \end{cases}
-\end{equation}
-where $a,b\in\Rset$. For $a,b\neq 0$, the third equation
-in~(\ref{eq:poisson-robin}) is termed a \textit{Robin boundary
-  condition}.
-
-Integration by parts one can obtain the following variational formulation:
-\begin{equation*}
-  \begin{cases}
-    \text{Find $u_h\in U_{h}$ such that}
-    \\\noalign{\medskip}
-    \begin{aligned}
-      \nu\int_\Omega \nabla u_h \cdot \nabla v_h
-      + \nu\frac a b \int_{\Gamma_N} u v
-      = \int_\Omega f\, v_h
-      + \nu \frac 1b \int_{\Gamma_N} g_N\, v_h
-      \quad\text{for each } v_h\in U_{h},
-    \end{aligned}
-  \end{cases}
-\end{equation*}
-being $U_h$ defined as above.
-
-\begin{exercise}
-  Develop a FreeFem++ script for the finite element approximation of
-  the solution of the problem presented above. For instance, use
-  $a=1, b=1$ and the same domain and data as in
-  \lstlistingname~\ref{dirich-neumann}.
-\end{exercise}
-
 \section{Delving into the FreeFem++ language}
 \label{sec:delv-into-freef}
 
@@ -609,16 +582,15 @@ Fundamental data types are similar to C++. But some fundamental types of C++ are
 caption={FreeFem++ fundamental data types and operations},
 ]{code/variables.edp}
 
-\subsection{Linear System Associated to Variational Formulation}
+\subsection{Linear System Associated to FEM}
 \label{part:line-syst-assoc}
 
-In \FF, one can use the keyword \texttt{varf} to store the matrix and
-vector related to a variational formulation. Then the operator \verb|^-1*|
-can be used to solve the associated linear system.
-
-The advantage of using this procedure is that it is faster that
-\texttt{solve} or \texttt{problem} (about 4 times faster, according to
-\FF documentation).
+The keyword \texttt{varf} can be used in \FF to store the matrix and
+vector related to a variational formulation. Then the operator
+\verb|^-1*| can be used to solve the associated linear system.  The
+advantage of using the \texttt{varf} approach is that, if used
+properly, it is faster that \texttt{solve} or \texttt{problem} (about
+4 times faster, according to \FF documentation).
 
 The following script uses \texttt{varf} for solving Example~\ref{dirich-neumann}.
 
@@ -627,10 +599,12 @@ caption={Linear System Associated to Variational Formulation},
 ]{code/poisson-varf.edp}
 
 \begin{exercise}
-  Compare execution time of \texttt{problem} and \texttt{varf}
+  Compare computing time of \texttt{problem} and \texttt{varf}
   approaches for solving the Poisson problem with Dirichlet
   conditions.  Search FreeFem++ documentation for find a function
-  which can be utilized for calculation of the computing time.
+  which can be utilized for calculation of the computing
+  time. \textit{Hint: use the function \texttt{clock(\ )} for getting
+    current time, then compute time difference.}
 \end{exercise}
 
 \section{Solving Evolution Equations}
@@ -669,8 +643,8 @@ Here:
 
 For time discretization, we fix $n\in\Nset$ and consider the
 following $n+1$ time instants in $[0,T]$:
-$$t_k= \deltaT\cdot k, \ k=0, ..., n,$$
-where $\deltaT/n$ is the time step.
+$$t_m= \deltaT\cdot k, \ m=0, ..., N$$
+where $\deltaT=T/N$ is the time step.
 
 The \textit{Implicit Euler} method for~(\ref{eq:heat equation}) can be
 written as follows:
@@ -678,31 +652,31 @@ written as follows:
 %   \frac{\partial u}{\partial t}  \approx \frac{u^{k+1}-u^k}{\deltaT} \\
 %   \Delta u \approx \Delta u^{k+1}
 % \end{align*}
-Given $u^0_h=u_0$, for each $k=0,...,N-1$, find $u^{k+1}_h\in U_h$ (space
+Given $u^0_h=u_0$, for each $m=0,...,N-1$, find $u^{m+1}_h\in U_h$ (space
 defined in section~\ref{sec:poisson-problem-with-mixed-bc}) such that:
 \begin{equation}
   \label{eq:euler-implicit-heat-equation}
   \left\{
     \begin{aligned}
-      \frac{u^{k+1}_h-u^k_h}{\deltaT} -\nu\Delta u^{k+1}_h &= f^{k+1}_h \quad \text{ in } \Omega, \\
-      u^{k+1}_h &= g_D^{k+1} \quad \text{ on } \Gamma_D, \\
-      \frac{\partial u^{k+1}_h}{\partial n} &= g_N^{k+1} \quad \text{ on } \Gamma_N.
+      \frac{u^{m+1}_h-u^m_h}{\deltaT} -\nu\Delta u^{m+1}_h &= f^{m+1}_h \quad \text{ in } \Omega, \\
+      u^{m+1}_h &= g_D^{m+1} \quad \text{ on } \Gamma_D, \\
+      \frac{\partial u^{m+1}_h}{\partial n} &= g_N^{m+1} \quad \text{ on } \Gamma_N.
     \end{aligned}
     \right.
 \end{equation}
 Former problem can be written in variational formulation as follows:
 \begin{equation*}
-  a(u^{k+1}_h,v_h) = b(v_h) \quad \forall v_h\in U_h,
+  a(u^{m+1}_h,v_h) = b(v_h) \quad \forall v_h\in U_h,
 \end{equation*}
 where
 \begin{equation*}
     \begin{aligned}
-      a(u,v)&=\frac{1}{\deltaT} \int_\Omega u^{k+1} v + \nu\int_\Omega \nabla
-      u^{k+1} \cdot \nabla v,
+      a(u,v)&=\frac{1}{\deltaT} \int_\Omega u^{m+1} v + \nu\int_\Omega \nabla
+      u^{m+1} \cdot \nabla v,
       \\
       b(v)  &= \int_\Omega f \cdot v
-      +\frac{1}{\deltaT} \int_\Omega  u^{k} v
-      +\int_{\Gamma_N} \nu g_N v.
+      +\frac{1}{\deltaT} \int_\Omega  u^{m} v
+      +\int{\Gamma_N} \nu\int_\Omega g1 v.
     \end{aligned}
 \end{equation*}
 % \begin{equation}
@@ -740,6 +714,46 @@ label={lst:heat-ei}
 {code/heat-EI.edp}
 
 \appendix
+
+\section{Poisson Problem With Robin Boundary Conditions}
+
+Let us consider the following PDE problem, which generalizes~(\ref{eq:poisson-mixto}):
+\begin{equation}
+  \label{eq:poisson-robin}
+  \begin{cases}
+    \begin{aligned}
+      -\nu\Delta u &= f \quad \text{ in } \Omega, \\
+      u &= g_D \quad \text{ on } \Gamma_D, \\
+      au + b \frac{\partial u}{\partial n} &= g_N \quad \text{ on } \Gamma_N,
+    \end{aligned}
+  \end{cases}
+\end{equation}
+where $a,b\in\Rset$. For $a,b\neq 0$, the third equation
+in~(\ref{eq:poisson-robin}) is termed a \textit{Robin boundary
+  condition}.
+
+Integration by parts one can obtain the following variational formulation:
+\begin{equation*}
+  \begin{cases}
+    \text{Find $u_h\in U_{h}$ such that}
+    \\\noalign{\medskip}
+    \begin{aligned}
+      \nu\int_\Omega \nabla u_h \cdot \nabla v_h
+      + \nu\frac a b \int_{\Gamma_N} u v
+      = \int_\Omega f\, v_h
+      + \nu \frac 1b \int_{\Gamma_N} g_N\, v_h
+      \quad\text{for each } v_h\in U_{h},
+    \end{aligned}
+  \end{cases}
+\end{equation*}
+being $U_h$ defined as above.
+
+\begin{exercise}
+  Develop a FreeFem++ script for the finite element approximation of
+  the solution of the problem presented above. For instance, use
+  $a=1, b=1$ and the same domain and data as in
+  \lstlistingname~\ref{dirich-neumann}.
+\end{exercise}
 
 \section{The Stokes equations}
 \label{sec:stokes}
