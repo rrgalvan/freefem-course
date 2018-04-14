@@ -640,9 +640,12 @@ caption={Linear System Associated to Variational Formulation},
 \label{sec:heat-equation}
 \newcommand{\deltaT}{\Delta t}
 
-Former examples were steady, namely time independent. In this section we are going
-to solve the following transient problem (Heat equation with mixed
-Dirichlet+Neumann boundary conditions): find $u=u(x,t)$ such that
+Former examples were steady, namely time independent. In this section
+we are going to solve the following transient problem (heat equation
+with mixed Dirichlet+Neumann boundary conditions). Of course, although
+the solution is going to be called ``temperatura'', it is applied to
+any parabolic diffusive law (e.g. in biological models). The problem
+reads: find $u=u(x,t)$ such that
 \begin{equation}
   \label{eq:heat equation}
   \left\{
@@ -659,8 +662,9 @@ Here:
 \item $x\in\Omega\subset\R^2$, with smooth piecewise boundary,  $\partial\Omega=\Gamma_D\cup\Gamma_N$
 \item $t\in [0,T]$, where $T>0$ is the final time
 \item $u_0$: $\Omega\to\R$: temperature at initial time.
-\item $\nu>0$, $f:\Omega\times(0,T)\to\R$ (heat source in the domain).
-  $u_{\text{ext}}:\Gamma_N\times(0,T)\to\R$ (heat source on boundary $\Gamma_N$).
+\item $\nu>0$, $f:\Omega\times(0,T)\to\R$ (heat source in the domain),
+  $g_D:\Gamma_D\times(0,T)\to\R$ (heat source on Dirichlet boundary $\Gamma_D$),
+  $g_N:\Gamma_N\times(0,T)\to\R$ (heat source on Neumann boundary $\Gamma_N$).
 \end{itemize}
 
 For time discretization, we fix $n\in\Nset$ and consider the
@@ -686,7 +690,7 @@ defined in section~\ref{sec:poisson-problem-with-mixed-bc}) such that:
     \end{aligned}
     \right.
 \end{equation}
-Note that former problem can be written in variational formulation as follows:
+Former problem can be written in variational formulation as follows:
 \begin{equation*}
   a(u^{k+1}_h,v_h) = b(v_h) \quad \forall v_h\in U_h,
 \end{equation*}
@@ -698,7 +702,7 @@ where
       \\
       b(v)  &= \int_\Omega f \cdot v
       +\frac{1}{\deltaT} \int_\Omega  u^{k} v
-      +\int{\Gamma_N} \nu\int_\Omega g1 v.
+      +\int_{\Gamma_N} \nu g_N v.
     \end{aligned}
 \end{equation*}
 % \begin{equation}
@@ -710,41 +714,24 @@ where
 % \end{equation}
 
 
-% ecuaciÃ³n anterior, obtendremos el siguiente sistema en tiempo: En la
-% etapa inicial ($k=0$), tomamos $u^0=u(t=0)=u_0$. Conocidos los valores
-% $u^0,...,u^k$, que aproximan a los valores de $u(t_0),...,u(t_k)$, en
-% la etapa $k+1$, calculamos $u^{k+1}$ como soluciÃ³n de: hallar $u\in
-% H^1(\Omega)$ tal que $u=g_D$ en $\Gamma_D$, $u=g_N$ en $\Gamma_N$ y
-% \begin{equation*}
-%   \left\{
-%     \begin{aligned}
-%       &\int_\Omega\frac{u^{k+1}-u^k}{dt} v + \nu\int_\Omega \nabla u \cdot \nabla v
-%         = \int_\Omega f \cdot v
-%       \\
-%       &\text{para todo $v\in H_0^1(\Omega)$.}
-%     \end{aligned}
-%   \right.
-% \end{equation*}
-% Como se comentÃ³ antes, el problema anterior puede reformulado para
-% adaptarlo al marco de Lax-Milgram y, asÃ­, demostrar que existe una
-% Ãºnica soluciÃ³n dÃ©bil. A continuaciÃ³n, si pasamos al segundo miembro
-% los datos conocidos, podemos identificar las formas bilineal y lineal
-% siguientes:
-% \begin{equation*}
-%     \begin{aligned}
-%       a(u,v)&=\int_\Omega\frac{u^{k+1}}{dt} v + \nu\int_\Omega \nabla
-%       u \cdot \nabla v,
-%       \\
-%       b(v)  &= \int_\Omega f \cdot v
-%         +\int_\Omega \frac{u^{k}}{dt} v
-%     \end{aligned}
-% \end{equation*}
-% y a partir de ahÃ­ escribir el programa que se muestra a continuaciÃ³n, que
-% calcularÃ¡ la soluciÃ³n en cada etapa de tiempo (a travÃ©s de un bucle
-% \verb|for|) y, en cada etapa, grabarÃ¡ en un fichero postscript la
-% soluciÃ³n correspondiente.
 
 \subsubsection{\FF program}
+For instance, the following script shows the resolution of heat
+equation by implicit Euler time
+scheme~(\ref{eq:euler-implicit-heat-equation}), for the following data:
+\begin{itemize}
+\item Domain $\Omega$: unit circle.  $\partial\Omega$ is split
+  into two boundaries: $\Gamma_D$ is defined by angle in $(0,\pi/4)$
+  while $\Gamma_D$ is defined by angle in $(\pi/4,2\pi)$. Space
+  discretization is defined by $100$ sub-intervals approximating
+  $\partial\Omega$.
+\item Time interval: $[0,T]=[0,1]$, with time step $\delta_T=1/100$.
+\item Initial boundary condition: $u(x,0)=0$ in $\Omega$. Dirichlet
+  boundary condition: $g_D(x,t)= 100-100/(t+1)$ on
+  $\Gamma_D\times (0,T)$. Neumann boundary condition: $g_N(x,t)=0$ on
+  $\Gamma_N\times (0,T)$.
+\item $f=0$, viscosity parameter $\nu=1$.
+\end{itemize}
 
 \lstinputlisting[
 caption={Heat Equation},

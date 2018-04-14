@@ -4,11 +4,11 @@ load "iovtk"; // We will output vtk
 
 // 1.1. Mesh
 real R=1;
-border gamma0(t=0, pi/4)    { x=R*cos(t); y=R*sin(t); }
-border gamma1(t=pi/4, 2*pi) { x=R*cos(t); y=R*sin(t); }
+border gammaD(t=0, pi/4)    { x=R*cos(t); y=R*sin(t); }
+border gammaN(t=pi/4, 2*pi) { x=R*cos(t); y=R*sin(t); }
 
-int n=30;
-mesh Th = buildmesh(gamma0(n)+gamma1(9*n));
+int n=10;
+mesh Th = buildmesh(gammaD(n)+gammaN(9*n));
 plot(Th, wait=1);
 
 // 1.2. FE space and functions
@@ -24,14 +24,11 @@ real t=0, T=1;  // Time interval [0,T]
 int  N=100; // Number of time iterations
 real dt=T/N;  // Time step
 
-func f=0; //8*(x^2+y^2);
-// func real g1(real x, real y, real t) {
-//   return 40*t;
-// }
-func real g0(real x, real y, real t) {
+func f=0;
+func real gD(real x, real y, real t) {
   return 100*(1-1./(t+1));
 }
-func real g1(real x, real y, real t) {
+func real gN(real x, real y, real t) {
   return 0;
 }
 
@@ -50,10 +47,10 @@ problem heatEquation(u,v)=
   )
   // Linear form
   - int2d(Th)( uold*v/dt + f*v )
-  - int1d(Th, gamma1) ( g1(x,y,t)*v ) // Neumann boundary condtion
+  - int1d(Th, gammaN) ( gN(x,y,t)*v ) // Neumann boundary condtion
 
   // Dirichlet boundary condtion
-  + on(gamma0, u=g0(x,y,t));
+  + on(gammaD, u=gD(x,y,t));
 
 // Time iteration loop
 for (int k=0; k<N; ++k ) {
@@ -61,6 +58,8 @@ for (int k=0; k<N; ++k ) {
   t = t + dt;    // Increase current time
   heatEquation;  // Solve the PDE variational problem
   uold = u;      // Save solution for next time step
+
+  plot(Th, u, fill=true, value=true);
 
   // 3. Post-processing (save to VTK for further displaying with Paraview)
   string filename="/tmp/heat_equation-" + k + ".vtk";
