@@ -32,7 +32,7 @@
 \usepackage{pgf}
 
 \usepackage[noblocks]{authblk} % Authors
-\setlength{\affilsep}{3em}
+\setlength{\affilsep}{2em}
 
 \providecommand{\alert}[1]{\textbf{#1}}
 \providecommand{\structure}[1]{#1}
@@ -48,16 +48,14 @@
   \subsubsection*{Exercise~\theexercise.}}
 {}
 
+%----------------------------------------------------------------
 \title{Computer Practices: \\ The Finite Element Method with \FF}
 
-% \author[$\dagger$]{Juan Vicente Gutiérrez Santacreu}
 \author[$\dagger$]{J. Rafael Rodríguez Galván}
-% \affil[$\dagger$]{Departamento de Matemática Aplicada I. Universidad de Sevilla. \texttt{juanvi@us.es}}
-% \affil[$\dagger$]{Departamento de Matemáticas. Universidad de Cádiz. \texttt{rafael.rodriguez@uca.es}}
 \date{
   ~
   \\[2em]
-  \textsf{\textsc{EDP y Métodos Numéricos} \\(\textit{Máster Interuniversitario en Matemáticas})}
+  \textsf{\LARGE \textsc{EDP y Métodos Numéricos.} \\[1ex] \textit{Máster Interuniversitario en Matemáticas}}
   \\[7em]
   \includegraphics[width=0.07\textwidth]{./cc-by-sa.png}
   \\[1em]
@@ -67,6 +65,7 @@
       \scriptsize\url{http://creativecommons.org/licenses/by-sa/3.0/}}.
   \end{small}
 }
+\affil[$\dagger$]{Departamento de Matemáticas. Universidad de Cádiz. \texttt{rafael.rodriguez@uca.es}}
 
 % -----------------------------------
 % Code listing style
@@ -234,19 +233,14 @@ preferred editor between different possibilities, for instance (see
 \item \texttt{Emacs} on GNU/Linux, MacOS or Windows. Note that Emacs
   is a free/libre general-purpose (not only specialized in \FF)
   and powerful text editor.
+\item \texttt{Atom} on GNU/Linux, MacOS or Windows. Like Emacs, Atom is a
+powerful free/libre general-purpose text editor.
 \item \texttt{\FFcs} on GNU/Linux, MacOS or Windows. Note that \FFcs
   is integrated environment specialized in editing and post-processing
   \FF scripts.
 \end{itemize}
 
-
-
-% Anyway, for a first approach to \FF, we recommend \FFcs,
-% \url{http://www.ann.jussieu.fr/~lehyaric/ffcs/}. \FFcs is an
-% integrated environment providing \FF, and adequate editor and other
-% characteristics. Of course, advanced users may prefer other options.
-
-Here we review the configuration of the last two ones.
+Here we review the configuration of the last three ones.
 
 \subsection{Using \FF under Emacs}
 
@@ -268,6 +262,19 @@ download and unzip \textit{in your home user directory} the file
 For advanced configuration of \FF mode on Emacs, follow the
 instructions from \url{https://github.com/rrgalvan/freefem-mode}.
 
+\subsection{Using \FF under Atom}
+Atom is a trendy and stylish general purpose free (as freedom) web editor
+which can be installed following the instructions in its
+\href{https://atom.io}{web page}.
+
+Thousands of packages are available which make Atom do amazing
+things. They can be installed using the menu \textit{Atom $\rightarrow$
+Preferences $\rightarrow$ Install}. Among them, the packages
+\textit{language-freefem-official} and \textit{freefem-runner}
+can be recommended for syntax highlighting and running FreeFem++ scripts,
+using the menu \textit{Packages $\rightarrow$ FreeFem++ Runner $\rightarrow$
+Launch compilation} or pressing the keys \textit{Alt + Control + F}.
+
 \subsection{Using \FF under the integrated environment \FFcs}
 \label{sec:freefem-CS}
 
@@ -280,8 +287,6 @@ Emacs the following characteristics:
 \item Online help including documentation in HTML.
 \end{itemize}
 
-
-\subsubsection{Installation}
 For installation, you can get your preferred version from
 the ``\textit{Download}'' link
 (\url{http://www.ann.jussieu.fr/~lehyaric/ffcs/install.php}) and
@@ -301,15 +306,15 @@ only a few steps). For instance:
 
 In the following exercise, we write a very simple FreeFem++ script
 which plots a simple mesh in the unit square $[0,1]\times[0,1]$. This
-mesh is defined by the subdivision of $[0,1]$ into to sub-intervals
-(both in the $x$ axis in the $y$ axis).
+mesh is defined by the subdivision of $[0,1]$ into 2 sub-intervals
+(both in the $x$ axis and in the $y$ axis).
 \begin{exercise}
   Write the following code and run it. Test that a graphic
   is opened and a message is written in the bottom panel.
 \begin{lstlisting}
 mesh Th = square(2,2); // Declare a mesh object and build it
 plot(Th);
-cout << "This first mesh was properly drawn" << endl;
+cout << "This first mesh works properly!" << endl;
 \end{lstlisting}
 Former code may result quite familiar to C++ programmers. In
 particular, notice that commentaries can be introduced by the
@@ -320,10 +325,10 @@ object constructors.
 
 When running this example, a window will be opened showing the
 mesh\footnote{Although in \FFcs, windows are opened in the right top
-  panel}. Although this window contains no buttons or menus, it can be
+  panel}.  Although this graphic window contains no buttons or menus, it can be
 controlled by the keyboard and by variables passed when
-plotting. Press '\texttt{?}' key for help and for details see the \FF
-manual and
+plotting. It can be closed using the \texttt{Esc} key. Press the '\texttt{?}'
+key for help. For details see the \FF manual or the
 \href{http://www.um.es/freefemv3/ff++/pmwiki.php?n=FFDoc.Plot}{'Plot'
   page in the FreeFem++ Wiki Manual}.
 
