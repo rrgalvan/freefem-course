@@ -1,0 +1,279 @@
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{fixltx2e}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage{soul}
+\usepackage{textcomp}
+\usepackage{marvosym}
+\usepackage{xspace}
+\usepackage{latexsym}
+\usepackage{amssymb}
+\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+\usepackage{hyperref}
+\definecolor{darkblue}{rgb}{0.0,0.1,0.3}
+\definecolor{darkgreen}{rgb}{0.0,0.35,0.15}
+\definecolor{darkred}{rgb}{0.3,0.1,0.0}
+\def\refColor{darkgreen}
+\hypersetup{%
+  colorlinks,
+  linkcolor=\refColor,
+  urlcolor=\refColor,
+  anchorcolor=\refColor,
+  citecolor=\refColor
+}
+\usepackage[hmargin={2.5cm,2cm}, vmargin=2.1cm]{geometry}
+\tolerance=1000
+\usepackage{listings}
+\usepackage{ff++listings}
+\usepackage{pgf}
+
+\providecommand{\alert}[1]{\textbf{#1}}
+\providecommand{\structure}[1]{#1}
+
+\newcounter{exercise}
+\newenvironment{exercise}[1][]{%
+  \stepcounter{exercise}
+  \subsubsection*{Ejercicio~\theexercise. #1}}
+{}
+
+\title{Ejercicios}
+% \author[$\dagger$]{J. Rafael Rodríguez Galván}
+% \affil[$\dagger$]{Departamento de Matemáticas. Universidad de Cádiz. \texttt{rafael.rodriguez@uca.es}}
+\date{ ~
+    \\[-4em]
+  \textsf{\textsc{EDP y Métodos Numéricos}
+    \\
+    (\textit{Máster
+      Interuniversitario en Matemáticas})}
+  \\[1em]
+    Versión 0.9
+    }
+
+% -----------------------------------
+% Code listing style
+% -----------------------------------
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.94,0.94,0.95}
+
+\lstdefinestyle{mystyle}{
+    % backgroundcolor=\color{backcolour},
+    % commentstyle=\color{codegreen},
+    % keywordstyle=\color{magenta},
+    % numberstyle=\tiny\color{codegray},
+    % stringstyle=\color{codepurple},
+    basicstyle=\footnotesize\ttfamily,
+    % basicstyle=\linespread{1.2}, % Line spacing
+    % breakatwhitespace=false,
+    % breaklines=true,
+    % numbers=left,
+    % numbersep=5pt,
+    aboveskip=1.0em,
+    belowskip=1.0em,
+    language=freefem++
+}
+\lstset{style=mystyle}
+% -----------------------------------
+
+\usepackage{pde}
+\newcommand{\V}{V}
+
+% -----------------------------------
+\begin{document}
+% -----------------------------------
+
+\maketitle
+
+\setcounter{tocdepth}{2}
+% \tableofcontents
+% \vspace*{1cm}
+
+\begin{exercise}[La ecuación de Fokker-Planck]
+
+Consideramos la siguiente ecuación:
+\begin{equation}
+  \label{eq:flokker-planck}
+  \left\{
+    \begin{aligned}
+    &u_t = \div(\grad u + u \grad\V), \quad \text{en } \Omega\times (0,T),
+    \\[0.2ex]
+      &\grad u\cdot n =0, \quad \text{en } \partial\Omega\times(0,T),
+      \quad u(\xx,0)=u_0(\xx), \quad \xx\in\Omega,
+    \end{aligned}
+    \right.
+\end{equation}
+donde $\Omega\subset\Rset^d$ (en la práctica, $d=2$ o $3$) es un abierto
+acotado con frontera regular y $T>0$ es un tiempo final dado.
+
+Esta ecuación interviene en distintos ámbitos, como transporte en
+semiconductores, física del plasma o dinámica
+estelar~\cite{jungel_entropy_2016}. La variable $u=u(\xx,t)\ge 0$
+representa densidad, dentro del ámbito considerado, mientras que el
+vector $\V(\xx)\in\Rset^d$ es un potencial para el que, por
+simplicidad, asumimos $\grad\V \cdot \nn=0$ sobre
+$\partial\Omega\times (0,T)$.
+
+Asumimos eque existe una única solución de~(\ref{eq:flokker-planck}) y
+que ésta es suficientemente regular para que las siguientes
+expresiones tengan un sentido riguroso.
+
+
+\begin{quote}
+  \textit{El objetivo de esta práctica es responder a los siguientes
+    apartados. Algunos de ellos son de tipo teórico y otros son
+    prácticos. Para los primeros, puedes generar un documento pdf que
+    contenga las respuestas. Para lo ejercicios prácticos, debes
+    entregar un archivo comprimido que contenga los ficheros
+    \texttt{.edp} junto al informe pdf o las gráficas indicadas en
+    cada apartado. Opcionalmente, se podrían entregar uno o más vídeos
+    (generados con Paraview) mostrando la evolución en 3D de las
+    soluciones numéricas obtenidas.}
+\end{quote}
+
+\subsection*{Apartado 1.}
+\begin{enumerate}
+\item Deducir la siguiente formulación variacional
+para~(\ref{eq:flokker-planck}) (que tiene sentido en $D'(0,T;\Rset)$):
+hallar $u\in H^1(\Omega)$ tal que
+\begin{equation}
+\label{eq:formulacion-variacional-FP}
+\frac{d}{dt} (u(t),v)_{L^2(\Omega)}+ a(u,v)=0, \quad\forall v \in V.
+\end{equation}
+donde
+$$
+a(u,v):=(\grad u, \grad v)_{L^2(\Omega)} + (u \grad V, \grad v)_{L^2(\Omega)}.
+$$
+\item Realizar un programa FreeFem++, llamado \texttt{apartado1b.edp},
+  en el que se aproxime la solución de~(\ref{eq:flokker-planck}) en
+  $\Omega\times (0,T) = C_2\times(0,1)$, donde $C_2$ es el interior de
+  la circunferencia de radio 2, mediante un esquema de tipo Euler
+  implícito para la discretización en tiempo y elementos finitos
+  $P_1$--Lagrange para la discretización en espacio. Se utilizarán los
+  siguientes parámetros:
+  \begin{itemize}
+  \item $u_0(\xx)=u_0(x,y) =  e^{-10(x^2+y^2)}$
+  \item $\V(\xx)=10$.
+  \item Número de vértices en la frontera de $C_2$: $n_x=250$.
+  \item Número de iteraciones de tiempo: $n_t=50$ (por tanto, el paso
+    de tiempo es $k=T/n_t = 1/50$.
+  \end{itemize}
+  \begin{flushright}
+    \begin{quote}\small
+      \it Observación: para los datos anteriores, se tiene
+      $\grad\V=0$, luego~(\ref{eq:flokker-planck}) se reduce a la
+      ecuación del calor. Este es, por tanto, un primer test que nos
+      puede ayudar a garantizar que el código FreeFem++ que estamos
+      programando es correcto.
+    \end{quote}
+  \end{flushright}
+\item Representar la solución obtenida en los instantes de tiempo
+  $t_i = k \cdot i$, para $i=0, 10, 20, 30, 40, 50$.
+\end{enumerate}
+
+\subsection*{Apartado 2.}
+\begin{enumerate}
+\item Demostrar la siguiente propiedad (conservación de la masa): si
+  $u$ es solución de~(\ref{eq:flokker-planck}), entonces
+$$
+\int_\Omega u(\xx,t) \; dx = \int_\Omega u_0(\xx) \; dx, \quad \forall
+t\in (0,T).
+$$
+  \begin{flushright}
+    \begin{quote}\small \it
+      Idea: aplicar la formulación
+      variacional~(\ref{eq:formulacion-variacional-FP}) para la
+      función test $v=1$.
+    \end{quote}
+  \end{flushright}
+\item Realizar un programa FreeFem++, llamado \texttt{apartado2b.edp},
+  en el que se aproxime la solución de~(\ref{eq:flokker-planck}) para
+  los datos del apartado anterior salvo
+  $$
+  \V(\xx)=10\,u_0(x,y)  =  10\, e^{-10(x^2+y^2)}
+  $$
+
+\item Calcular (usando el operador \texttt{int2d} de FreeFem++) las
+  integrales $\int_\Omega u(\xx,t_i) \; dx$, para todo instante
+  $t_i=k\cdot i$, $i=0,\dots n_t$, imprimirlos en la salida estándar y
+  comprobar que coinciden. Esto será un test de que el programa
+  funciona correctamente (el conocimiento de la teoría matemática
+  ayuda a programar correctamente!).
+\item Representar, de nuevo, la solución obtenida en los instantes de
+  tiempo $t_i = k \cdot i$, para $i=0, 10, 20, 30, 40, 50$. Comprobar
+  que existen notables diferencias.
+\end{enumerate}
+
+\subsection*{Apartado 3.}
+En este apartado, nos centraremos de nuevo en el caso en el que $\V$
+es constante y por tanto~(\ref{eq:flokker-planck}) se reduce a la
+ecuación del calor.
+
+Llamaremos estado estacionario\footnote{
+ Obsérvese que $u_\infty$ es la única solución constante de
+$\grad u + u\grad\VV$ tal que
+$\int_\Omega u_\infty \; dx = \int_\Omega u_0 \; dx$.}
+de~(\ref{eq:flokker-planck}) a
+$$
+u_\infty = \frac 1{|\Omega|}\int_\Omega u_0(x)\; dx \ge 0,
+$$
+donde $|\Omega|=\int_\Omega 1 \;dx$ es la medida de
+$\Omega$.  Definimos el
+siguiente funcional:
+$$
+H_2[u] = \norm[2]{u-u_\infty}^2 =  \int_\Omega (u-u_\infty)^2 \; dx
+$$
+\begin{enumerate}
+\item Denotamos $u(t)=u(\cdot,t):\Omega \to \Rset$, $t\in  [0,T]$.
+  Demostrar que, para toda $u(t)$ solución $u(t)$
+  de~(\ref{eq:flokker-planck}) con dato inicial $u_0$, se tiene la
+  desigualdad
+  \begin{equation}
+    \label{eq:1}
+    \frac{d}{dt} H_2 [u(t)] = -2 \int_\Omega |\grad u(t)|^2 dx \le 0
+  \end{equation}
+  \begin{flushright}
+    \begin{quote}\small \it
+      Idea: aplicar que, suponiendo suficiente regularidad,
+      $\frac d{dt} H_2[u(t)] = \int_\Omega \frac d{dt} (u-u_\infty)^2$, a continuación usar la
+      ecuación~(\ref{eq:flokker-planck})$_1$ e integrar por partes.
+    \end{quote}
+  \end{flushright}
+  \begin{flushright}
+    \begin{quote}\small \it
+      Observación: Se dice que $H_2[u]$ (en realidad, $-H_2[u]$) es un
+      funcional de entropía para~(\ref{eq:flokker-planck}). En
+      general, un funcional de entropía es cualquier funcional que es
+      no decreciente sobre las soluciones de una familia de EDP. Este
+      tipo de funcionales son muy útiles para estudiar el
+      comportamiento asintótico (cuando $t\to\infty$) de las
+      soluciones. Ver~\cite{jungel_entropy_2016}.
+    \end{quote}
+  \end{flushright}
+\item Crear un fichero \texttt{apartado3b.edp} (se puede tomar como
+  base el programa \texttt{apartado2b.edp} del apartado anterior) para
+  que se calculen, en cada iteración $i=0,...,n_t$, los valores de
+  $H_2[u(t_i)]$. Utilizando la orden \texttt{ofstream} de FreeFem++,
+  grabar estos datos en un fichero. Utilizando un programa externo,
+  como \textit{Python}, \textit{Matlab} u \textit{Octave},
+  representarlos gráficamente y confirmar el hecho de que
+  $u\to u_\infty$ en norma $L_2$.
+
+\end{enumerate}
+\end{exercise}
+
+\bibliographystyle{unsrt}
+\bibliography{biblio}
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% ispell-local-dictionary: "spanish"
+%%% End:

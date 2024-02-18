@@ -1,0 +1,541 @@
+% ------- Mathematics ---------
+\RequirePackage{amsmath}
+\RequirePackage{amssymb}
+\def\Cset{{\mathbb C}}
+\def\Qset{{\mathbb Q}}
+\def\Zset{{\mathbb Z}}
+\def\Rset{{\mathbb R}}
+\def\Nset{{\mathbb N}}
+
+\RequirePackage{xspace}
+
+\def\eps{\varepsilon}
+% \newcommand{\st}{\ensuremath{\ / \ }}
+\newcommand{\rg}[1]{\ensuremath{\mathop{\mbox{rg}}#1}}
+\newcommand{\rank}{\ensuremath{\mathop{\mbox{rank}}}}
+\newcommand{\img}{\operatorname{Img}}
+
+
+% -------- PDE --------
+\newcommand{\uu}{\vect{u}}
+
+\newcommand{\domain}{\Omega}
+
+\newcommand{\dt}[1]{\partial_t #1}
+\newcommand{\dx}[1]{\partial_x #1}
+\newcommand{\dy}[1]{\partial_y #1}
+\newcommand{\dz}[1]{\partial_z #1}
+%\renewcommand{\dz}[1]{\partial_z #1} % \dz is defined by xelatex
+\newcommand{\grad}[1]{\nabla #1}
+\newcommand{\gradx}[1]{\nabla_\xx #1}
+\renewcommand{\div}[1]{\nabla\cdot{}#1}
+\newcommand{\divx}[1]{\nabla_\xx\cdot{}#1}
+\newcommand{\convect}[1]{c\big(#1\big)}
+
+\newcommand{\ddt}[1]{\delta_t #1} % Discrete derivative in time
+
+\newcommand{\dtt}[1]{\partial^2_{tt} #1}
+\newcommand{\dxx}[1]{\partial^2_{xx} #1}
+\newcommand{\dyy}[1]{\partial^2_{yy} #1}
+\newcommand{\dzz}[1]{\partial^2_{zz} #1}
+
+\newcommand{\fa}{\ \forall \ }
+\newcommand{\vect}[1]{\mathbf{#1}}
+\newcommand{\xx}{\vect{x}}
+\newcommand{\XX}{\vect{X}}
+\newcommand{\zz}{z}
+
+\newcommand{\nn}{\vect{n}}
+\newcommand{\nx}{\vect{n}_\xx}
+\newcommand{\nz}{n_z}
+
+\newcommand{\In}[2][\ ]{#1\text{in $#2$}}
+\newcommand{\On}[2][\ ]{#1\text{on $#2$}}
+
+\newcommand{\Deltax}{\Delta_\xx}
+\newcommand{\visc}{\nu}
+\newcommand{\Th}{\ensuremath{{\cal T}_h}\xspace}
+% \newcommand{\Th}{\ensuremath{\tau_h}\xspace}
+\newcommand{\Mh}{\ensuremath{{\cal M}_h}\xspace}
+
+% -------- Primitive equations ----------
+
+\newcommand{\surface}{S}
+\newcommand{\surfaceBoundary}{{\Gamma_{s}}}
+\newcommand{\bottomBoundary}{{\Gamma_{b}}}
+\newcommand{\talusBoundary}{{\Gamma_{l}}}
+\newcommand{\notSurfaceBoundary}{\bottomBoundary\cup\talusBoundary}
+\newcommand{\dmin}{D_\text{min}}
+\newcommand{\dmax}{D_\text{max}}
+
+\renewcommand{\P}[1]{\ensuremath{\mathbb{P}_{#1}}\xspace}
+\newcommand{\Pd}[1]{\ensuremath{\mathbb{P}^{\mathcal{d}}_{#1}}\xspace}
+\newcommand{\Pb}{\P{1,b}}
+\newcommand{\Q}[1]{\ensuremath{\mathbb{Q}_{#1}}\xspace}
+\newcommand{\Qd}[1]{\ensuremath{\mathbb{Q}^{\mathcal d}_{#1}}\xspace}
+% \newcommand{\Polin}[1]{\ensuremath{{\mathbb P}_{#1}}}
+
+%\newcommand{\st}{\ / \ }
+
+% %\newcommand{\uu}{\vect{u}}
+% \newcommand{\ux}{u_1}
+% \newcommand{\uy}{u_2}
+% \newcommand{\uz}{u_3}
+% \newcommand{\vv}{\vect{v}}
+% \newcommand{\vz}{v_3}
+% \newcommand{\ww}{\vect{w}}
+% \newcommand{\wz}{v_3}
+% \newcommand{\ps}{p_s}
+% \newcommand{\qs}{q_s}
+% \newcommand{\ff}{\vect{f}}
+% \newcommand{\FF}{\vect{F}}
+% \newcommand{\gs}{\vect{g}_{s}}
+% \newcommand{\pp}{p}
+% \newcommand{\qq}{q}
+
+\newcommand{\Fh}{\ensuremath{\vect{F}_h}}
+
+\newcommand{\vv}{\vect{v}}
+\newcommand{\ww}{\vect{w}}
+\newcommand{\ff}{\vect{f}}
+\newcommand{\gs}{\vect{g}_{s}}
+\newcommand{\pp}{p}
+\newcommand{\qq}{q}
+
+\newcommand{\uh}{{u_{h}}}
+\newcommand{\uuh}{{\uu_{h}}}
+\newcommand{\vh}{{v_{h}}}
+\newcommand{\wh}{{w_{h}}}
+\newcommand{\wwh}{{\ww_{h}}}
+\newcommand{\um}{{u^{m}}}
+\newcommand{\umm}{{u^{m+1}}}
+\newcommand{\uma}{{u^{m+r_1}}}
+\newcommand{\vmb}{{v^{m+r_2}}}
+\newcommand{\vmc}{{v^{m+r_3}}}
+\newcommand{\umd}{{u^{m+r_4}}}
+\newcommand{\uum}{{\uu^{m}}}
+\newcommand{\uumm}{{\uu^{m+1}}}
+\newcommand{\vm}{{v^{m}}}
+\newcommand{\vmm}{{v^{m+1}}}
+\newcommand{\wm}{{w^{m}}}
+\newcommand{\wmm}{{w^{m+1}}}
+\newcommand{\uzh}{{u_{3,h}}}
+\newcommand{\vzh}{{v_{3,h}}}
+\newcommand{\ph}{{p_{h}}}
+\newcommand{\qh}{{q_{h}}}
+
+\newcommand{\bu}{\overline u}
+\newcommand{\buu}{\overline \uu}
+\newcommand{\bv}{\overline v}
+\newcommand{\bvv}{\overline \vv}
+\newcommand{\bw}{\overline w}
+\newcommand{\bww}{\overline \ww}
+\newcommand{\bp}{\overline \pp}
+
+\newcommand{\buh}{{\overline{u}_h}}
+\newcommand{\buuh}{{\overline{\uu}_h}}
+\newcommand{\bvh}{{\overline{v}_h}}
+\newcommand{\bvvh}{{\overline{\vv}_h}}
+\newcommand{\bwh}{{\overline{w}_h}}
+\newcommand{\bwwh}{{\overline{\ww}_h}}
+\newcommand{\bph}{{\overline{\pp}_h}}
+
+
+
+% \newcommand{\wwh}{{\ww_{h}}}
+% \newcommand{\uum}{{\uu^{m}}}
+% \newcommand{\uumm}{{\uu^{m+1}}}
+
+% \newcommand{\uuh}{{\uu_{h}}}
+% \newcommand{\buu}{\overline \uu}
+% \newcommand{\bww}{\overline \ww}
+% \newcommand{\buuh}{{\overline{\uu}_h}}
+% \newcommand{\bwwh}{{\overline{\ww}_h}}
+
+% \newcommand{\Te}{T\xspace}
+% \newcommand{\Sa}{S\xspace}
+% \newcommand{\uh}{\uu_{h}}
+% \newcommand{\vh}{\vv_{h}}
+% \newcommand{\wh}{\ww_{h}}
+% \newcommand{\um}{\uh^{m}}
+% \newcommand{\umm}{\uh^{m+1}}
+% \newcommand{\vm}{\vh^{m}}
+% \newcommand{\vmm}{\vh^{m+1}}
+% \newcommand{\wm}{\wh^{m}}
+% \newcommand{\wmm}{\wh^{m+1}}
+% \newcommand{\uzh}{u_{3,h}}
+% \newcommand{\vzh}{v_{3,h}}
+% \newcommand{\ph}{p_{h}}
+% \newcommand{\qh}{q_{h}}
+% \renewcommand{\pm}{\ph^m}
+% \newcommand{\pmm}{\ph^{m+1}}
+% \newcommand{\Teh}{\Te_h}
+% \newcommand{\Tem}{\Te_h^m}
+% \newcommand{\Temm}{\Te_h^{m+1}}
+% \newcommand{\Sah}{\Sa_h}
+% \newcommand{\Sam}{\Sa_h^m}
+% \newcommand{\Samm}{\Sa_h^{m+1}}
+% \newcommand{\bu}{\overline \uu}
+% \newcommand{\bv}{\overline \vv}
+% \newcommand{\bw}{\overline \ww}
+% \newcommand{\bp}{\overline \pp_h}
+% \newcommand{\bT}{\overline{T}_h}
+% \newcommand{\bS}{\overline{S}_h}
+% \newcommand{\buh}{\overline{\uu}_h}
+% \newcommand{\bvh}{\overline{\vv}_h}
+% \newcommand{\bwh}{\overline{\ww}_h}
+% \newcommand{\bph}{\overline{\pp}_h}
+
+\newcommand{\pstarm}{\pp^{\star,m}}
+\newcommand{\pstarmm}{\pp^{\star,m+1}}
+\newcommand{\phim}{\phi_h^m}
+\newcommand{\phimm}{\phi_h^{m+1}}
+\newcommand{\rhom}{\rho_h^m}
+\newcommand{\rhomm}{\rho_h^{m+1}}
+
+\newcommand{\tu}{{\widetilde\uu}}
+\newcommand{\tum}{{\widetilde\uu}_h^{m}}
+\newcommand{\tumm}{{\widetilde\uu}_h^{m+1}}
+\newcommand{\tv}{{\widetilde\vv}}
+\newcommand{\tvm}{{\widetilde\vv}_h^{m}}
+\newcommand{\tvmm}{{\widetilde\vv}_h^{m+1}}
+\newcommand{\NLTu}{{\mbox{NLT}_{\widetilde\uu}^{m+1}}}
+\newcommand{\NLTv}{{\mbox{NLT}_{\widetilde\vv}^{m+1}}}
+
+\newcommand{\BB}{\vect{B}}
+
+\newcommand{\intx}[2][\surface]{\int_{#1}#2\,d\xx}
+\newcommand{\intz}[1]{\langle #1 \rangle}
+\newcommand{\intxz}[2][\domain]{\int_{#1}#2\,d\xx\,dz}
+\newcommand{\ints}[2][]{\int_{#1}#2\,ds}
+
+\newcommand{\viscx}{\nu_\xx}
+\newcommand{\viscy}{\nu_\yy}
+\newcommand{\viscz}{\nu_\zz}
+\newcommand{\convx}[2]{\bigl( #1\cdot\gradx \bigr) #2}
+\newcommand{\convz}[2]{#1\dz #2}
+\newcommand{\difus}[2][]{\Delta_{#1} #2}
+
+
+\newcommand{\UU}{\vect{U}}
+\newcommand{\VV}{V}
+\newcommand{\WW}{\vect{W}}
+\newcommand{\PP}{P}
+
+\newcommand{\UUh}{\ensuremath{\vect{U}_h}\xspace}
+\newcommand{\Uh}{\ensuremath{U_h}\xspace}
+\newcommand{\Vh}{\ensuremath{V_h}\xspace}
+\newcommand{\Vho}{\ensuremath{V_{h,0}}\xspace}
+\newcommand{\Ph}{\ensuremath{P_h}\xspace}
+\newcommand{\Pho}{\ensuremath{P_{h,0}}\xspace}
+\newcommand{\Wh}{\ensuremath{\WW_h}\xspace}
+\newcommand{\WWh}{\ensuremath{\WW_h}\xspace}
+\newcommand{\Xh}{\ensuremath{\XX_h}\xspace}
+\newcommand{\TTh}{\ensuremath{\mathsf{T}_h}\xspace}
+\newcommand{\SSh}{\ensuremath{\mathsf{S}_h}\xspace}
+
+% Spaces
+\newcommand{\Uspace}{\textbf{H}_{b,l}^1(\Omega)}
+\newcommand{\Vspace}{H_{z,0}^1(\Omega)}
+\newcommand{\Pspace}{L_0^2(\Omega)}
+\newcommand{\Tspace}{H^1(\Omega)}
+\newcommand{\Sspace}{H^1(\Omega)}
+\newcommand{\UspaceDual}{\textbf{H}_{b,l}^{-1}(\Omega)}
+\newcommand{\VspaceDual}{H_{z,0}^{-1}(\Omega)}
+\newcommand{\PspaceDual}{L^2(\Omega)}
+
+\newcommand{\QQ}{Q}
+\newcommand{\Qh}{\QQ_h}
+\newcommand{\VM}[1][M]{\VV_{0,#1}}
+\newcommand{\QM}[1][\overline{M}]{\QQ_{#1}}
+%\newcommand{\QN}{\QQ_N}
+
+% Order of approximation
+\newcommand{\OO}{\mathcal{O}}
+
+% Macroelements
+\newcommand{\UM}{U_{0,M}}
+\renewcommand{\VM}{V_{0,M}}
+\newcommand{\WM}{\textbf{W}_{0,M}}
+\newcommand{\PM}{P_{M}}
+
+
+% Elements of the spaces
+% \renewcommand{\vv}{v}
+
+\newcommand{\cc}{\boldsymbol{\chi}}
+\newcommand{\bc}{\boldsymbol{\overline\chi}}
+\newcommand{\ch}{\boldsymbol{\chi_h}}
+\newcommand{\bch}{\boldsymbol{\overline\chi_h}}
+
+% \newcommand{\norm}[2][1,\domain]{\lVert #2 \rVert_{#1}}
+\newcommand{\abs}[1]{\left| #1 \right|}
+\newcommand{\absBig}[1]{\bigl| #1 \bigr|}
+\newcommand{\absBigg}[1]{\biggl| #1 \biggr|}
+\newcommand{\absBiggg}[1]{\bigggl| #1 \bigggr|}
+\newcommand{\semiNorm}[2][1,\domain]{\lvert #2 \lvert_{#1}}
+\newcommand{\surfaceNorm}[2][1]{\norm[#1,\surface]{#2}}
+%\newcommand{\norm}[1]{{\|{#1}\|}}
+\newcommand{\normUV}[1]{\norm[H^1\times H^1_{z,0}]{#1}}
+\newcommand{\normU}[1]{\norm{\grad{#1}}}
+\newcommand{\normV}[1]{\norm{\dz{#1}}}
+\newcommand{\normP}[1]{{\norm{#1}}}
+
+%\newcommand{\normx}[2][\surface]{||#2||_{#1}}
+\newcommand{\pro}[3][\domain]{\bigl(#2,#3\bigr)_{#1}}
+\newcommand{\prox}[2]{\pro[\surface]{#1}{#2}}
+\newcommand{\meshNorm}[1]{\norm[h]{#1}}
+\newcommand{\localSemiNorm}[2][\overline{M}]{|#2|_{#1}}
+\newcommand{\bilinearB}[3][\surface]{\pro[#1]{\divx\intz{#2}}{#3}}
+
+\newcommand{\surfacePartition}{\mathcal{X}_h}
+\newcommand{\verticalPartition}{\mathcal{Z}_h}
+\newcommand{\domainPartition}{\mathcal{C}_h}
+
+\newcommand{\Vstokes}{V_h^S}
+
+\newcommand{\FEtwoSpaces}[2]{\mbox{\ensuremath{#1\,}\mbox{--}\ensuremath{\,#2}}\xspace}
+\newcommand{\FEtwoSpacesP}[2]{%
+  \ensuremath{\FEtwoSpaces{\P{#1}}{\P{#2}}}}
+\newcommand{\FEthreeSpaces}[3]{\FEtwoSpaces{\big(#1,#2\big)}{#3}}
+\newcommand{\FEthreeSpacesP}[3]{%
+  \ensuremath{\FEthreeSpaces{\P{#1}}{\P{#2}}{\P{#3}}}}
+\newcommand{\FEthreeSpacesQ}[3]{%
+  \ensuremath{\FEthreeSpaces{\Q{#1}}{\Q{#2}}{\Q{#3}}}}
+\newcommand{\FEfourSpaces}[4]{%
+  \ensuremath{\big({#1},{{#2}},{#3}\big)\,}\mbox{--}\ensuremath{\,{#4}}\xspace}
+\newcommand{\FEfourSpacesP}[4]{%
+  \ensuremath{\FEfourSpaces{\P{#1}}{\P{#2}}{\P{#3}}{\P{#4}}}}
+
+\newcommand{\ISp}{\ref{eq:ISp}\xspace}
+\newcommand{\ISph}{\ref{eq:ISph}\xspace}
+\newcommand{\ISv}{\ref{eq:ISv}\xspace}
+\newcommand{\ISvh}{\ref{eq:ISvh}\xspace}
+
+\newcommand{\ConstISp}{\beta_p}
+\newcommand{\ConstISph}{\gamma_{p}}
+\newcommand{\ConstISv}{\beta_v}
+\newcommand{\ConstISvh}{\gamma_v}
+
+\newcommand{\ConstCoerciv}{\alpha}
+\newcommand{\ConstInfSup}{\beta}
+
+
+\renewcommand{\AA}{\mathcal{A}}
+\newcommand{\LL}{{\mathcal{L}}}
+\newcommand{\PDz}{\widehat P}
+\newcommand{\PhDz}{\widehat P_h}
+
+
+\newcommand{\fU}{\textbf{F}_\uu}
+\newcommand{\fV}{F_\vv}
+\newcommand{\fUm}{\textbf{F}_\uu^m}
+\newcommand{\fVm}{F_\vv^m}
+\newcommand{\fUmm}{\textbf{F}_\uu^{m+1}}
+\newcommand{\fVmm}{F_\vv^{m+1}}
+\newcommand{\fT}{F_T}
+\newcommand{\fS}{F_S}
+\newcommand{\fTm}{F_T^m}
+\newcommand{\fSm}{F_S^m}
+\newcommand{\fTmm}{F_T^{m+1}}
+\newcommand{\fSmm}{F_S^{m+1}}
+
+\newcommand{\air}[1]{#1_{\mbox{\scriptsize{\textit{air}}}}}
+\newcommand{\lateral}[1]{#1_{\mbox{\scriptsize{\textit{lat}}}}}
+\newcommand{\airTemperature}{\air{T}}
+\newcommand{\lateralTemperature}{\lateral{T}}
+\newcommand{\lateralSalinity}{S_{l}}
+\newcommand{\airVelocity}{\air\uu}
+\newcommand{\gravity}{g}
+\newcommand{\alphaU}{\alpha^\uu}
+\newcommand{\alphaV}{\alpha^\vv}
+\newcommand{\alphaS}{\alpha^\Sa}
+\newcommand{\alphaT}{\alpha^\Te}
+
+%\newcommand{\dens}{\rho}
+\newcommand{\tMin}{0}
+\newcommand{\tMax}{t_{\text{max}}}
+\newcommand{\AEs}{AEs\xspace}
+\newcommand{\PEs}{PEs\xspace}
+\newcommand{\ANS}{A-NS\xspace}
+
+\newcommand{\R}[1]{\ensuremath{R_{#1}}}  % Restriction for \epsilon=0
+\newcommand{\Reps}[1]{\ensuremath{R^\epsilon_{#1}}} % Restriction, \epsilon>0
+
+\newcommand{\otoprule}{\midrule[1.66\heavyrulewidth]}
+
+\newcommand{\llaveizq}[1]{$\left\{
+  \begin{tabular}{@{}l@{}}#1\end{tabular}\right.$}
+\newcommand{\llaveder}[1]{$\left.
+  \begin{tabular}{@{}l@{}}#1\end{tabular}\right\}$}
+
+\newcommand{\MhOneVertex}{\ensuremath{\widehat{\cal M}_h}\xspace}
+\newcommand{\Macro}{{\widehat M}}
+\newcommand{\UMacro}{{U_{0,\widehat M}}}
+\newcommand{\VMacro}{{V_{0,\widehat M}}}
+\newcommand{\WMacro}{{\WW_{0,\widehat M}}}
+\newcommand{\PMacro}{{P_{\widehat M}}}
+\newcommand{\xStructured}{$x$--structured\xspace}
+\newcommand{\xUnstructured}{$x$--unstructured\xspace}
+\newcommand{\yStructured}{$y$--structured\xspace}
+\newcommand{\yUnstructured}{$y$--unstructured\xspace}
+\newcommand{\zStructured}{$z$--structured\xspace}
+\newcommand{\zUnstructured}{$z$--unstructured\xspace}
+
+%...
+\newcommand{\steadyStokes}{\emph{(Steady-Stokes)}\xspace}
+\newcommand{\evolutionStokes}{\emph{(Evolution-Stokes)}\xspace}
+\newcommand{\aniStokes}{\emph{(Ani-Stokes)}\xspace}
+\newcommand{\aniNS}{\emph{(Ani-NStokes)}\xspace}
+\newcommand{\hydNS}{\emph{(Hyd-NStokes)}\xspace}
+\newcommand{\hydStokes}{\emph{(Hyd-Stokes)}\xspace}
+\newcommand\hydStokesDiscr{\ensuremath{\text{\emph{(Hyd-Stokes)}}_h}\xspace}
+
+\newcommand{\reducedProblem}{\emph{(Integrated-PE)}\xspace}
+
+%...
+\newcommand{\strip}[1]{%
+  \begin{flushright}
+    \color{PHDgrayC}
+    \scriptsize{#1}
+\end{flushright}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Beamer presentations
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Define a special style at begining of sections
+\newcommand{\SetEmptyBackground}{
+  \setbeamertemplate{background}{}
+  \setbeamertemplate{footline}[default]
+}
+\newcommand{\SetDefaultBackground}{
+  \setbeamertemplate{background}
+  % {\includegraphics[width=\paperwidth,height=\paperheight]{slide_bg}}
+  \setbeamertemplate{footline}[PHDtheme]
+}
+\newenvironment{sectionframe}{%
+  \SetEmptyBackground\begin{frame}
+%    \par\noindent\structure{\rule{\linewidth}{1pt}}\par
+%    \vskip+0.6em
+    \vskip1.6em
+    Section \thesection.  \itshape\insertsection
+    \vskip-0.7em
+    \par\noindent\structure{\rule{\linewidth}{1pt}}\par
+  }{%
+  \end{frame}\SetDefaultBackground}
+
+\newenvironment{smallblock}[1]{%
+  % Block with horizontal top title
+  \begin{block}{\small #1}
+    \vspace{-0.9\baselineskip}
+    \small
+  }{\vspace{-1.2\baselineskip}\end{block}}
+
+\newenvironment{smallblockTurn}[1]{%
+  \begin{block}{}
+    \vspace{-0.4\baselineskip}
+    \small
+    \begin{tabular}{@{}l|>{$}r<{$}>{$}l<{$}@{}}
+      \multirow{3}{*}{
+        \begin{turn}{40}
+          #1
+        \end{turn}}&
+      \begin{minipage}{0.8\linewidth}
+      }{\vspace{-1.0\baselineskip}%
+      \end{minipage}\end{tabular}\end{block}}
+
+\newenvironment{BlockNoTitle}{%
+  \HideBlockTitle%
+  \begin{block}{\vspace{-3ex}}}{%
+  \end{block}%
+  \ResetBlockTitle}
+
+\newenvironment{BoxWithVerticalLabel}[2]{%
+%  \begin{tabular}{@{\quad}r@{ }l@{}}
+  \mbox{}\quad
+  \begin{rotate}{90}
+    \color{black}\small\fbox{#1}
+  \end{rotate}}%&}
+{}
+%{\end{tabular}}
+
+%%%%%%%%%
+% Vídeo
+%%%%%%%%%
+
+\usepackage{movie15}
+
+\newcommand{\playVideoHref}[3]{\href{run:#3}{\rule{#1}{#2}}}
+
+\newcommand{\playVideoMovie}[3]{%
+  \includemovie[autoplay,
+  % , controls % Show Play/Stop buttons
+  ]{#1}{#2}{#3}}
+
+\usepackage{xparse} % From future LaTeX 3
+\DeclareDocumentCommand{\PlayVideoWithLabel}{%
+  O{0.5\linewidth} O{0.5\linewidth}  O{} m }{%
+  % #1: width of video box
+  % #2: height of video box
+  % #3: Label
+  % #4: Video file
+  \begin{BoxWithVerticalLabel}{#3}{#1}
+    % \playVideoHref{#1}{#2}{#4}
+    \playVideoMovie{#1}{#2}{#4} % Works in okular
+  \end{BoxWithVerticalLabel}}
+
+% ---------- Discontinous Galerkin ----------------
+\newcommand{\Eh}{\ensuremath{{\cal E}_h}\xspace}
+\newcommand{\Ehi}{\ensuremath{{\cal E}_h^{\mathcal{i}}}\xspace}
+\newcommand{\Ehb}{\ensuremath{{\cal E}_h^{\mathcal{b}}\xspace}}
+
+\newcommand{\jump}[1]{\ensuremath{\left[\!\left[#1\right]\!\right]}\xspace}
+\newcommand{\average}[1]{\ensuremath{\left\{\!\!\left\{#1\right\}\!\!\right\}}\xspace}
+
+\newcommand{\asip}[1][sip]{\ensuremath{a_h^{\mathrm{#1}}}}
+\newcommand{\shv}{\ensuremath{s_h^{v}}}
+\newcommand{\gradh}{\ensuremath{\nabla_h}}
+\newcommand{\gradxh}{\ensuremath{\nabla_{\xx,h}}}
+\newcommand{\dzh}{\ensuremath{\partial_{z,h}}}
+
+\newcommand{\norm}[2][]{\ensuremath{\|#2\|_{#1}\xspace}}
+\newcommand{\normsip}[1]{\norm[\mathrm{sip}]{#1}}
+\newcommand{\seminormU}[1]{\ensuremath{|#1|_{\mathit{U}}}}
+\newcommand{\seminormVeps}[2][\varepsilon]{\ensuremath{|#2|_{#1,\mathit{V}}}}
+\newcommand{\normvel}[1]{\norm[\mathrm{anis}]{#1}}
+\newcommand{\normveleps}[1]{\norm[\mathrm{anis},\varepsilon]{#1}}
+
+\newcommand{\prodEsc}[2][]{\left(#2\right)_{#1}}
+\newcommand{\prodBroken}[2][H^1(\Th)]{\left(#2\right)_{#1}}
+\newcommand{\normBroken}[2][H^1(\Th)]{\norm[#1]{#2}}
+
+\newcommand{\mean}[1]{\ensuremath{\langle #1 \rangle_{{}\Omega}}}
+
+% \newcommand{\Pdisc}[1]{\ensuremath{\mathbb{P^d}_{#1}}\xspace}
+
+\newcommand{\Ctrace}{\ensuremath{C_{\mathit{tr}}}}
+
+% Keller-Segel
+\newcommand{\vn}{v_n}
+\newcommand{\un}{u_n}
+\newcommand{\ND}{\mathit{ND}}
+\newcommand{\kA}{\alpha_0}
+\newcommand{\kB}{\alpha_1}
+\newcommand{\kC}{\alpha_2}
+\newcommand{\kD}{\alpha_3}
+\newcommand{\kE}{\alpha_4}
+\newcommand{\Sch}{\mbox{Sch}}
+
+\newcommand{\E}{\mathcal{E}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\tm}{\ensuremath{t_m}}
+\newcommand{\tmm}{\ensuremath{t_{m+1}}}
+\newcommand{\Em}{\E^m}
+\newcommand{\Emm}{\E^{m+1}}
+\newcommand{\Dm}{\D^{m}}
+\newcommand{\Dmm}{\D^{m+1}}
+\newcommand{\Nm}{\mathcal{N}^{m}}
+\newcommand{\Nmm}{\mathcal{N}^{m+1}}
+\newcommand{\Mm}{\mathcal{M}^{m}}
+\newcommand{\Mmm}{\mathcal{M}^{m+1}}

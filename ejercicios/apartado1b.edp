@@ -1,0 +1,88 @@
+load "iovtk"
+
+real X0=-1, X1=1, Y0=-1, Y1=1;
+border Lx0(t=X0,X1) { x=t; y=Y0; }
+border Ly0(t=Y0,Y1) { x=X1; y=t; }
+border Lx1(t=X0,X1) { x=t; y=Y1; }
+border Ly1(t=Y0,Y1) { x=X0; y=t; }
+real R=2;
+border C(t=0,2*pi)  { x=R*cos(t); y=R*sin(t); }
+
+int n=250;
+// mesh Th=buildmesh( Lx0(n) + Ly0(n) + Lx1(-n) + Ly1(-n) );
+mesh Th=buildmesh( C(n) );
+
+fespace Vh(Th, P1);
+Vh u, u0, v;
+Vh V;
+
+// Data
+// func uInit = 0.001*(R^2-x^2-y^2);
+func uInit = exp(-10*(x^2+y^2));
+u0=uInit;
+
+// func funcV=uInit;
+// func funcV = 0.001*(R^2-x^2-y^2);
+func funcV = 1.e+1*exp(-10*(x^2+y^2));
+// func funcV=10;
+V = funcV;
+
+int pausa=0; // Wait in plot()
+
+real T=1;
+int ntiter=50;
+real dt = T/ntiter;
+
+// >>------------------------- Problem
+
+macro grad(u) [dx(u), dy(u)] // EOM
+
+problem FokkerPlank(u,v)=
+   int2d(Th)(
+	     u*v /dt
+	     + grad(u)'*grad(v)
+	     + u*grad(V)'*grad(v)
+	     )
+  -int2d(Th)(
+	     u0*v/dt
+	     );
+
+// <<------------------------- Problem
+
+real t=0;
+u0 = uInit;
+
+// Mass
+real mass0 = int2d(Th)(u0);
+ofstream massFile("/tmp/mass_FP.txt");
+massFile.precision(16); // Number of floating point digits
+massFile << mass0 << endl;
+cout << "Inital Mass: " << mass0 << endl;
+
+// Plot initical condition
+plot(u0, cmm="u, iter=0", fill=1, value=1, wait=pausa);
+string vtkFile="/tmp/FokkerPlank";
+int [int] Order=[1];
+savevtk(vtkFile+"0.vtk", Th, u0, dataname="u", order=Order);
+
+
+
+// >>------------------------- Time iterations
+
+for (int it=1; it<=ntiter; it++) {
+  t=it*dt;
+  cout << "Iter it" << it << ", t=" << t << endl;
+  FokkerPlank;
+
+  // Mass
+  real mass=int2d(Th)(u);
+  massFile << mass << endl;
+  cout << "Mass: " << mass << endl;
+
+  u0=u;
+
+  plot(u, cmm="u, iter=" + it, fill=1, value=1, wait=pausa);
+
+  savevtk(vtkFile+it+".vtk", Th, u, dataname="u", order=Order);
+
+ }
